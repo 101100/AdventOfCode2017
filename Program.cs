@@ -42,10 +42,17 @@ namespace AdventOfCode2017
             }
             else if (day == 4)
             {
-                var input = Inputs.Day4;
+                const string input = Inputs.Day4;
 
                 Console.WriteLine($"Part 1: {Day4Part1(input)}");
                 Console.WriteLine($"Part 2: {Day4Part2(input)}");
+            }
+            else if (day == 5)
+            {
+                const string input = Inputs.Day5;
+
+                Console.WriteLine($"Part 1: {Day5Part1(input)}");
+                Console.WriteLine($"Part 2: {Day5Part2(input)}");
             }
             else
             {
@@ -237,10 +244,8 @@ namespace AdventOfCode2017
                     .ToArray())
                 .Select(row => row
                     .GroupBy(s => s)
-                    .Where(g => g.Count() > 1)
-                    .Any())
-                .Where(invalid => !invalid)
-                .Count();
+                    .Any(g => g.Count() > 1))
+                .Count(invalid => !invalid);
         }
 
         private static int Day4Part2(string input)
@@ -253,9 +258,39 @@ namespace AdventOfCode2017
                     .ToArray())
                 .Select(row => row
                     .GroupBy(s => new string(s.OrderBy(c => c).ToArray()))
-                    .Where(g => g.Count() > 1)
-                    .Any())
-                .Where(invalid => !invalid)
+                    .Any(g => g.Count() > 1))
+                .Count(invalid => !invalid);
+        }
+
+        private static int Day5Part1(string input)
+        {
+            var startingCode = input
+                .Split("\n")
+                .Select(r => int.Parse(r.Trim()))
+                .ToImmutableList();
+
+            return EnumerableExtensions
+                .Generate(Tuple.Create(startingCode, 0),
+                    state => state.Item2 >= 0 && state.Item2 < state.Item1.Count,
+                    lastState => Tuple.Create(
+                        lastState.Item1.SetItem(lastState.Item2, lastState.Item1[lastState.Item2] + 1),
+                        lastState.Item2 + lastState.Item1[lastState.Item2]))
+                .Count();
+        }
+
+        private static int Day5Part2(string input)
+        {
+            var startingCode = input
+                .Split("\n")
+                .Select(r => int.Parse(r.Trim()))
+                .ToImmutableList();
+
+            return EnumerableExtensions
+                .Generate(Tuple.Create(startingCode, 0),
+                    state => state.Item2 >= 0 && state.Item2 < state.Item1.Count,
+                    lastState => Tuple.Create(
+                        lastState.Item1.SetItem(lastState.Item2, lastState.Item1[lastState.Item2] >= 3 ? lastState.Item1[lastState.Item2] - 1 : lastState.Item1[lastState.Item2] + 1),
+                        lastState.Item2 + lastState.Item1[lastState.Item2]))
                 .Count();
         }
 
