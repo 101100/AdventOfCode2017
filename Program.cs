@@ -54,6 +54,13 @@ namespace AdventOfCode2017
                 Console.WriteLine($"Part 1: {Day5Part1(input)}");
                 Console.WriteLine($"Part 2: {Day5Part2(input)}");
             }
+            else if (day == 6)
+            {
+                const string input = Inputs.Day6;
+
+                Console.WriteLine($"Part 1: {Day6Part1(input)}");
+                Console.WriteLine($"Part 2: {Day6Part2(input)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -294,5 +301,61 @@ namespace AdventOfCode2017
                 .Count();
         }
 
+        private static int Day6Part1(string input)
+        {
+            var startingState = input
+                .Split("\t")
+                .Select(int.Parse)
+                .ToImmutableList();
+
+            return EnumerableExtensions
+                .Generate(Tuple.Create(ImmutableHashSet<string>.Empty, startingState),
+                    state => !state.Item1.Contains(string.Join(":", state.Item2)),
+                    lastState => Tuple.Create(lastState.Item1.Add(string.Join(":", lastState.Item2)), Day6Redistribute(lastState.Item2)))
+                .Count();
+        }
+
+        private static int Day6Part2(string input)
+        {
+            var startingState = input
+                .Split("\t")
+                .Select(int.Parse)
+                .ToImmutableList();
+
+            return EnumerableExtensions
+                .Generate(Tuple.Create(ImmutableDictionary<string, int>.Empty, startingState),
+                    state => state.Item1.All(p => p.Value <= 1),
+                    lastState => Tuple.Create(lastState.Item1.SetItem(string.Join(":", lastState.Item2), lastState.Item1.GetValueOrDefault(string.Join(":", lastState.Item2), 0) + 1), Day6Redistribute(lastState.Item2)))
+                .Select((t, index) => Tuple.Create(string.Join(":", t.Item2), index))
+                .Aggregate(ImmutableDictionary<string, ImmutableList<int>>.Empty,
+                    (acc, tuple) => acc.SetItem(
+                        tuple.Item1,
+                        acc.GetValueOrDefault(tuple.Item1, ImmutableList<int>.Empty).Add(tuple.Item2)))
+                .Select(p => p.Value)
+                .Where(l => l.Count > 1)
+                .Select(l => l[1] - l[0])
+                .First();
+        }
+
+        private static ImmutableList<int> Day6Redistribute(ImmutableList<int> lastState)
+        {
+            var maxIndex = lastState
+                .Select((amount, index) => Tuple.Create(amount, index))
+                .OrderByDescending(t => t.Item1)
+                .ThenBy(t => t.Item2)
+                .First()
+                .Item2;
+
+            var amountToRedistribute = lastState[maxIndex];
+            var amountPerBank = amountToRedistribute / lastState.Count;
+            var extra = amountToRedistribute % lastState.Count;
+
+            return lastState
+                .Select((amount, index) => amountPerBank
+                    + (index > maxIndex && maxIndex + extra >= index ? 1 : 0)
+                    + (index <= maxIndex && index <= maxIndex + extra - lastState.Count ? 1 : 0)
+                    + (index == maxIndex ? 0 : amount))
+                .ToImmutableList();
+        }
     }
 }
