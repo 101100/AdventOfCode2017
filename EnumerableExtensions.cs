@@ -67,6 +67,24 @@ namespace AdventOfCode2017
             }
         }
 
+        public static IEnumerable<Tuple<T1, T2, T3, T4, T5>> TupleScan<TInput, T1, T2, T3, T4, T5>(
+            this IEnumerable<TInput> input,
+            T1 seed1,
+            T2 seed2,
+            T3 seed3,
+            T4 seed4,
+            T5 seed5,
+            Func<T1, T2, T3, T4, T5, TInput, Tuple<T1, T2, T3, T4, T5>> update)
+        {
+            var state = Tuple.Create(seed1, seed2, seed3, seed4, seed5);
+
+            foreach (var item in input)
+            {
+                state = update(state.Item1, state.Item2, state.Item3, state.Item4, state.Item5, item);
+                yield return state;
+            }
+        }
+
         public static IEnumerable<T> StartWith<T>(this IEnumerable<T> input, T item)
         {
             return new[] {item}

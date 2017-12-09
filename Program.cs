@@ -564,22 +564,18 @@ namespace AdventOfCode2017
 
         private static IEnumerable<Tuple<int, bool, bool, bool, int>> Day9CreateGroupsStream(string input)
         {
-            // cancelled (2 = start, 1 = next, 0 = no)
-            // group start
-            // garbage start
-            // in garbage
-            // depth
             return input
-                .Scan(Tuple.Create(0, false, false, false, 0),
-                    (lastState, ch) => lastState.Item1 == 2 ? Tuple.Create(1, false, false, lastState.Item4, lastState.Item5)
-                        : ch == '!' ? Tuple.Create(2, false, false, lastState.Item4, lastState.Item5)
-                        : lastState.Item4
-                            ? (ch == '>' ? Tuple.Create(0, false, false, false, lastState.Item5)
-                            : Tuple.Create(0, false, false, true, lastState.Item5))
-                        : ch == '<' ? Tuple.Create(0, false, true, true, lastState.Item5)
-                        : ch == '{' ? Tuple.Create(0, true, false, false, lastState.Item5 + 1)
-                        : ch == '}' ? Tuple.Create(0, false, false, false, lastState.Item5 - 1)
-                        : lastState);
+                .TupleScan(0, false, false, false, 0,
+                    (cancelled, groupStart, garbageStart, inGarbage, depth, ch) =>
+                        cancelled == 2 ? Tuple.Create(1, false, false, inGarbage, depth)
+                            : ch == '!' ? Tuple.Create(2, false, false, inGarbage, depth)
+                            : inGarbage
+                                ? (ch == '>' ? Tuple.Create(0, false, false, false, depth)
+                                : Tuple.Create(0, false, false, true, depth))
+                            : ch == '<' ? Tuple.Create(0, false, true, true, depth)
+                            : ch == '{' ? Tuple.Create(0, true, false, false, depth + 1)
+                            : ch == '}' ? Tuple.Create(0, false, false, false, depth - 1)
+                            : Tuple.Create(0, false, false, false, depth));
         }
 
     }
