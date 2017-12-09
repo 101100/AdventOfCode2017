@@ -75,6 +75,13 @@ namespace AdventOfCode2017
                 Console.WriteLine($"Part 1: {Day8Part1(input)}");
                 Console.WriteLine($"Part 2: {Day8Part2(input)}");
             }
+            else if (day == 9)
+            {
+                const string input = Inputs.Day9;
+
+                Console.WriteLine($"Part 1: {Day9Part1(input)}");
+                Console.WriteLine($"Part 2: {Day9Part2(input)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -540,6 +547,39 @@ namespace AdventOfCode2017
                 : comparer.Equals(">=") ? value1 >= value2
                 : comparer.Equals(">") ? value1 > value2
                 : value1 != value2;
+        }
+
+        private static int Day9Part1(string input)
+        {
+            return Day9CreateGroupsStream(input)
+                .Where(t => t.Item2)
+                .Sum(t => t.Item5);
+        }
+
+        private static int Day9Part2(string input)
+        {
+            return Day9CreateGroupsStream(input)
+                .Count(t => t.Item1 == 0 && t.Item4 && !t.Item3);
+        }
+
+        private static IEnumerable<Tuple<int, bool, bool, bool, int>> Day9CreateGroupsStream(string input)
+        {
+            // cancelled (2 = start, 1 = next, 0 = no)
+            // group start
+            // garbage start
+            // in garbage
+            // depth
+            return input
+                .Scan(Tuple.Create(0, false, false, false, 0),
+                    (lastState, ch) => lastState.Item1 == 2 ? Tuple.Create(1, false, false, lastState.Item4, lastState.Item5)
+                        : ch == '!' ? Tuple.Create(2, false, false, lastState.Item4, lastState.Item5)
+                        : lastState.Item4
+                            ? (ch == '>' ? Tuple.Create(0, false, false, false, lastState.Item5)
+                            : Tuple.Create(0, false, false, true, lastState.Item5))
+                        : ch == '<' ? Tuple.Create(0, false, true, true, lastState.Item5)
+                        : ch == '{' ? Tuple.Create(0, true, false, false, lastState.Item5 + 1)
+                        : ch == '}' ? Tuple.Create(0, false, false, false, lastState.Item5 - 1)
+                        : lastState);
         }
 
     }
