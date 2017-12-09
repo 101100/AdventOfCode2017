@@ -61,6 +61,13 @@ namespace AdventOfCode2017
                 Console.WriteLine($"Part 1: {Day6Part1(input)}");
                 Console.WriteLine($"Part 2: {Day6Part2(input)}");
             }
+            else if (day == 7)
+            {
+                const string input = Inputs.Day7;
+
+                Console.WriteLine($"Part 1: {Day7Part1(input)}");
+                Console.WriteLine($"Part 2: {Day7Part2(input)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -356,6 +363,118 @@ namespace AdventOfCode2017
                     + (index <= maxIndex && index <= maxIndex + extra - lastState.Count ? 1 : 0)
                     + (index == maxIndex ? 0 : amount))
                 .ToImmutableList();
+        }
+
+        private static string Day7Part1(string input)
+        {
+            var inputs = input
+                .Split("\n")
+                .Select(r => r.Trim())
+                .Select(line => line.Split(" "))
+                .Select(parts => Tuple.Create(
+                    parts[0],
+                    int.Parse(parts[1].Trim('(', ')')),
+                    parts.Length > 3
+                        ? parts
+                            .Skip(3)
+                            .Select(s => s.TrimEnd(','))
+                            .ToImmutableArray()
+                        : ImmutableArray<string>.Empty))
+                .ToImmutableDictionary(tuple => tuple.Item1);
+
+            return inputs
+                .Select(p => p.Key)
+                .ToImmutableHashSet()
+                .Except(inputs.SelectMany(p => p.Value.Item3))
+                .First();
+        }
+
+        private static int Day7Part2(string input)
+        {
+            var inputs = input
+                .Split("\n")
+                .Select(r => r.Trim())
+                .Select(line => line.Split(" "))
+                .Select(parts => Tuple.Create(
+                    parts[0],
+                    int.Parse(parts[1].Trim('(', ')')),
+                    parts.Length > 3
+                        ? parts
+                            .Skip(3)
+                            .Select(s => s.TrimEnd(','))
+                            .ToImmutableArray()
+                        : ImmutableArray<string>.Empty))
+                .ToImmutableDictionary(tuple => tuple.Item1);
+
+            var rootName = inputs
+                .Select(p => p.Key)
+                .ToImmutableHashSet()
+                .Except(inputs.SelectMany(p => p.Value.Item3))
+                .First();
+
+            var root = rootName.Day7BuildTree(inputs);
+
+            return Day7FindUnbalancedNodesCorrectWeight(root);
+        }
+
+        private class TreeNode
+        {
+            public string Name;
+            public int Weight;
+            public ImmutableArray<TreeNode> Children;
+            public int ChildrenWeight;
+            public int TotalWeight;
+        }
+
+        private static TreeNode Day7BuildTree(this string rootName,
+            ImmutableDictionary<string, Tuple<string, int, ImmutableArray<string>>> inputs)
+        {
+            var rootInfo = inputs[rootName];
+
+            var root = new TreeNode
+            {
+                Name = rootName,
+                Weight = rootInfo.Item2,
+                Children = rootInfo.Item3
+                    .Select(childName => childName.Day7BuildTree(inputs))
+                    .ToImmutableArray()
+            };
+
+            root.ChildrenWeight = root.Children.Sum(child => child.TotalWeight);
+            root.TotalWeight = root.Weight + root.ChildrenWeight;
+
+            return root;
+        }
+
+        private static int Day7FindUnbalancedNodesCorrectWeight(TreeNode root)
+        {
+            foreach (var child in root.Children)
+            {
+                var result = Day7FindUnbalancedNodesCorrectWeight(child);
+                if (result > 0)
+                {
+                    return result;
+                }
+            }
+
+            var childWeights = root.Children
+                .GroupBy(child => child.TotalWeight)
+                .ToImmutableDictionary(g => g.Key, g => g.Count());
+
+            if (childWeights.Count > 1)
+            {
+                var correctWeight = childWeights
+                    .OrderByDescending(w => w.Value)
+                    .Select(p => p.Key)
+                    .First();
+
+                var badChild = root.Children
+                    .First(child => child.TotalWeight != correctWeight);
+
+                return correctWeight - badChild.ChildrenWeight;
+            }
+
+            return -1;
         }
     }
 }
