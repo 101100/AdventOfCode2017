@@ -9,7 +9,7 @@ namespace AdventOfCode2017
         public static IEnumerable<Tuple<T, T>> AllPairs<T>(this IEnumerable<T> input)
         {
             var inputArray = input.ToArray();
-            
+
             for (var i = 0; i < inputArray.Length; i++)
             {
                 for (var j = i + 1; j < inputArray.Length; j++)
@@ -50,6 +50,20 @@ namespace AdventOfCode2017
                 }
                 last = next;
                 first = false;
+            }
+        }
+
+        public static IEnumerable<TScan> Scan<TInput, TScan>(
+            this IEnumerable<TInput> input,
+            TScan seed,
+            Func<TScan, TInput, TScan> update)
+        {
+            var state = seed;
+
+            foreach (var item in input)
+            {
+                state = update(state, item);
+                yield return state;
             }
         }
 

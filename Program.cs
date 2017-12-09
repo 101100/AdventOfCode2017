@@ -68,6 +68,13 @@ namespace AdventOfCode2017
                 Console.WriteLine($"Part 1: {Day7Part1(input)}");
                 Console.WriteLine($"Part 2: {Day7Part2(input)}");
             }
+            else if (day == 8)
+            {
+                const string input = Inputs.Day8;
+
+                Console.WriteLine($"Part 1: {Day8Part1(input)}");
+                Console.WriteLine($"Part 2: {Day8Part2(input)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -113,7 +120,7 @@ namespace AdventOfCode2017
                     .Split("\t")
                     .Select(int.Parse)
                     .ToArray())
-                .Select(row => row.Aggregate(0, Math.Max) - row.Aggregate(int.MaxValue, Math.Min))
+                .Select(row => row.Max() - row.Min())
                 .Aggregate(0, (a, b) => a + b);
         }
 
@@ -476,5 +483,64 @@ namespace AdventOfCode2017
 
             return -1;
         }
+
+        private static int Day8Part1(string input)
+        {
+            return input
+                .Split("\n")
+                .Select(r => r.Trim())
+                .Select(line => line.Split(" "))
+                .Select(parts => Tuple.Create(
+                    parts[0],
+                    int.Parse(parts[2]) * (string.Equals("inc", parts[1], StringComparison.OrdinalIgnoreCase) ? 1 : -1),
+                    parts[4],
+                    parts[5],
+                    int.Parse(parts[6])))
+                .Aggregate(ImmutableDictionary<string, int>.Empty,
+                    (registers, parsed) =>
+                    {
+                        return Day8CheckCondition(registers.GetValueOrDefault(parsed.Item3, 0), parsed.Item4, parsed.Item5)
+                            ? registers.UpdateValue(parsed.Item1, 0, val => val + parsed.Item2)
+                            : registers;
+                    })
+                .Select(p => p.Value)
+                .Max();
+        }
+
+        private static int Day8Part2(string input)
+        {
+            return input
+                .Split("\n")
+                .Select(r => r.Trim())
+                .Select(line => line.Split(" "))
+                .Select(parts => Tuple.Create(
+                    parts[0],
+                    int.Parse(parts[2]) * (string.Equals("inc", parts[1], StringComparison.OrdinalIgnoreCase) ? 1 : -1),
+                    parts[4],
+                    parts[5],
+                    int.Parse(parts[6])))
+                .Scan(ImmutableDictionary<string, int>.Empty,
+                    (registers, parsed) =>
+                    {
+                        return Day8CheckCondition(registers.GetValueOrDefault(parsed.Item3, 0), parsed.Item4, parsed.Item5)
+                            ? registers.UpdateValue(parsed.Item1, 0, val => val + parsed.Item2)
+                            : registers;
+                    })
+                .Select(r => r
+                    .Select(p => p.Value)
+                    .Max())
+                .Max();
+        }
+
+        private static bool Day8CheckCondition(int value1, string comparer, int value2)
+        {
+            return comparer.Equals("==") ? value1 == value2
+                : comparer.Equals("<") ? value1 < value2
+                : comparer.Equals("<=") ? value1 <= value2
+                : comparer.Equals(">=") ? value1 >= value2
+                : comparer.Equals(">") ? value1 > value2
+                : value1 != value2;
+        }
+
     }
 }
