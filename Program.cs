@@ -22,14 +22,14 @@ namespace AdventOfCode2017
 
             if (day == 1)
             {
-                const string input = Inputs.Day1;
+                var input = Inputs.Day1;
 
                 Console.WriteLine($"Part 1: {Day1Part1(input)}");
                 Console.WriteLine($"Part 2: {Day1Part2(input)}");
             }
             else if (day == 2)
             {
-                const string input = Inputs.Day2;
+                var input = Inputs.Day2;
 
                 Console.WriteLine($"Part 1: {Day2Part1(input)}");
                 Console.WriteLine($"Part 2: {Day2Part2(input)}");
@@ -43,49 +43,49 @@ namespace AdventOfCode2017
             }
             else if (day == 4)
             {
-                const string input = Inputs.Day4;
+                var input = Inputs.Day4;
 
                 Console.WriteLine($"Part 1: {Day4Part1(input)}");
                 Console.WriteLine($"Part 2: {Day4Part2(input)}");
             }
             else if (day == 5)
             {
-                const string input = Inputs.Day5;
+                var input = Inputs.Day5;
 
                 Console.WriteLine($"Part 1: {Day5Part1(input)}");
                 Console.WriteLine($"Part 2: {Day5Part2(input)}");
             }
             else if (day == 6)
             {
-                const string input = Inputs.Day6;
+                var input = Inputs.Day6;
 
                 Console.WriteLine($"Part 1: {Day6Part1(input)}");
                 Console.WriteLine($"Part 2: {Day6Part2(input)}");
             }
             else if (day == 7)
             {
-                const string input = Inputs.Day7;
+                var input = Inputs.Day7;
 
                 Console.WriteLine($"Part 1: {Day7Part1(input)}");
                 Console.WriteLine($"Part 2: {Day7Part2(input)}");
             }
             else if (day == 8)
             {
-                const string input = Inputs.Day8;
+                var input = Inputs.Day8;
 
                 Console.WriteLine($"Part 1: {Day8Part1(input)}");
                 Console.WriteLine($"Part 2: {Day8Part2(input)}");
             }
             else if (day == 9)
             {
-                const string input = Inputs.Day9;
+                var input = Inputs.Day9;
 
                 Console.WriteLine($"Part 1: {Day9Part1(input)}");
                 Console.WriteLine($"Part 2: {Day9Part2(input)}");
             }
             else if (day == 10)
             {
-                const string input = Inputs.Day10;
+                var input = Inputs.Day10;
 
                 Console.WriteLine($"Part 1: {Day10Part1(input)}");
                 Console.WriteLine($"Part 2: {Day10Part2(input)}");
