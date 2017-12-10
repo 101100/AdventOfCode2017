@@ -20,3 +20,7 @@ insert_final_newline = false
 # Use tabs to indent .sln files
 [*.sln]
 indent_style = tab
+
+# Don't add final newline to input text files
+[*.txt]
+insert_final_newline = false
