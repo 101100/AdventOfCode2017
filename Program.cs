@@ -7,6 +7,7 @@ namespace AdventOfCode2017
 {
     public static class Program
     {
+
         private static void Main(string[] args)
         {
             var dayString = args.Length >= 1
@@ -81,6 +82,13 @@ namespace AdventOfCode2017
 
                 Console.WriteLine($"Part 1: {Day9Part1(input)}");
                 Console.WriteLine($"Part 2: {Day9Part2(input)}");
+            }
+            else if (day == 10)
+            {
+                const string input = Inputs.Day10;
+
+                Console.WriteLine($"Part 1: {Day10Part1(input)}");
+                Console.WriteLine($"Part 2: {Day10Part2(input)}");
             }
             else
             {
@@ -576,6 +584,76 @@ namespace AdventOfCode2017
                             : ch == '{' ? Tuple.Create(0, true, false, false, depth + 1)
                             : ch == '}' ? Tuple.Create(0, false, false, false, depth - 1)
                             : Tuple.Create(0, false, false, false, depth));
+        }
+
+        private static int Day10Part1(string input)
+        {
+            var startingState = Enumerable
+                .Range(0, 256)
+                .ToImmutableArray();
+
+            var finalState = input
+                .Split(",")
+                .Select(int.Parse)
+                .Select((length, skipCount) => Tuple.Create(length, skipCount))
+                .Scan(Tuple.Create(startingState, 0),
+                    (state, next) => Tuple.Create(
+                        Day10Twist(state.Item1, state.Item2, next.Item1),
+                        (state.Item2 + next.Item1 + next.Item2) % state.Item1.Length))
+                .Last();
+
+            return finalState.Item1
+                .Take(2)
+                .Aggregate(1, (a, v) => a * v);
+        }
+
+        private static ImmutableArray<int> Day10Twist(ImmutableArray<int> lastArray, int currentPosition, int length)
+        {
+            var arr = lastArray.ToArray();
+            for (var count = 0; count < length / 2; count++)
+            {
+                var pos = (currentPosition + count) % lastArray.Length;
+                var other = (currentPosition + length - count - 1) % lastArray.Length;
+
+                var temp = arr[pos];
+                arr[pos] = arr[other];
+                arr[other] = temp;
+            }
+
+            return arr.ToImmutableArray();
+        }
+
+        private static string Day10Part2(string input)
+        {
+            var startingState = Enumerable
+                .Range(0, 256)
+                .ToImmutableArray();
+
+            var finalState = Day10ToLengths(input)
+                .Repeat(64)
+                .Select((length, skipCount) => Tuple.Create(length, skipCount))
+                .Scan(Tuple.Create(startingState, 0),
+                    (state, next) => Tuple.Create(
+                        Day10Twist(state.Item1, state.Item2, next.Item1),
+                        (state.Item2 + next.Item1 + next.Item2) % state.Item1.Length))
+                .Last();
+
+            return string.Join("", finalState.Item1
+                .Batch(16)
+                .Select(b => b.Aggregate(0, (x, y) => x ^ y))
+                .Select(b => string.Format("{0:x2}", b)));
+        }
+
+        private static ImmutableArray<int> Day10ToLengths(string input)
+        {
+            return System.Text.Encoding.UTF8.GetBytes(input)
+                .Select(b => (int)b)
+                .Concat(
+                    new[]
+                    {
+                        17, 31, 73, 47, 23
+                    })
+                .ToImmutableArray();
         }
 
     }

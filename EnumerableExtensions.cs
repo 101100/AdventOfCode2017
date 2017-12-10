@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 namespace AdventOfCode2017
@@ -16,6 +17,22 @@ namespace AdventOfCode2017
                 {
                     yield return Tuple.Create(inputArray[i], inputArray[j]);
                 }
+            }
+        }
+
+        public static IEnumerable<IEnumerable<T>> Batch<T>(this IEnumerable<T> input, int batchSize)
+        {
+            var inputArray = input.ToImmutableArray();
+
+            for (var start = 0; start < inputArray.Length; start += batchSize)
+            {
+                yield return inputArray.Skip(start).Take(batchSize);
+            }
+
+            var remainder = inputArray.Length % batchSize;
+            if (remainder > 0)
+            {
+                yield return inputArray.Skip(inputArray.Length - remainder);
             }
         }
 
@@ -51,6 +68,13 @@ namespace AdventOfCode2017
                 last = next;
                 first = false;
             }
+        }
+
+        public static IEnumerable<T> Repeat<T>(this IEnumerable<T> input, int repetitions)
+        {
+            return Enumerable
+                .Range(0, repetitions)
+                .SelectMany(_ => input);
         }
 
         public static IEnumerable<TScan> Scan<TInput, TScan>(
