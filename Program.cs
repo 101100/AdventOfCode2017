@@ -136,7 +136,7 @@ namespace AdventOfCode2017
                     .Select(int.Parse)
                     .ToArray())
                 .Select(row => row.Max() - row.Min())
-                .Aggregate(0, (a, b) => a + b);
+                .Sum();
         }
 
         private static int Day2Part2(string input)
@@ -153,7 +153,7 @@ namespace AdventOfCode2017
                     .Where(t => t.Item1 > t.Item2 ? t.Item1 % t.Item2 == 0 : t.Item2 % t.Item1 == 0)
                     .Select(t => t.Item1 > t.Item2 ? t.Item1 / t.Item2 : t.Item2 / t.Item1)
                     .First())
-                .Aggregate(0, (a, b) => a + b);
+                .Sum();
         }
 
         private static int Day3Part1(int input)
@@ -183,7 +183,7 @@ namespace AdventOfCode2017
                     var nextValue = Day3GetNeighbours(nextPoint)
                         .Select(Day3FromPoint)
                         .Select(v => last.Count > v - 1 ? last[v - 1] : 0)
-                        .Aggregate(0, (a, b) => a + b);
+                        .Sum();
 
                     return last.Add(nextValue);
                 })
@@ -357,9 +357,7 @@ namespace AdventOfCode2017
                     lastState => Tuple.Create(lastState.Item1.SetItem(string.Join(":", lastState.Item2), lastState.Item1.GetValueOrDefault(string.Join(":", lastState.Item2), 0) + 1), Day6Redistribute(lastState.Item2)))
                 .Select((t, index) => Tuple.Create(string.Join(":", t.Item2), index))
                 .Aggregate(ImmutableDictionary<string, ImmutableList<int>>.Empty,
-                    (acc, tuple) => acc.SetItem(
-                        tuple.Item1,
-                        acc.GetValueOrDefault(tuple.Item1, ImmutableList<int>.Empty).Add(tuple.Item2)))
+                    (acc, tuple) => acc.UpdateValue( tuple.Item1, ImmutableList<int>.Empty, list => list.Add(tuple.Item2)))
                 .Select(p => p.Value)
                 .Where(l => l.Count > 1)
                 .Select(l => l[1] - l[0])
@@ -596,11 +594,10 @@ namespace AdventOfCode2017
                 .Split(",")
                 .Select(int.Parse)
                 .Select((length, skipCount) => Tuple.Create(length, skipCount))
-                .Scan(Tuple.Create(startingState, 0),
-                    (state, next) => Tuple.Create(
-                        Day10Twist(state.Item1, state.Item2, next.Item1),
-                        (state.Item2 + next.Item1 + next.Item2) % state.Item1.Length))
-                .Last();
+                .TupleAggregate(startingState, 0,
+                    (state, currentPosition, length, skipSize) => Tuple.Create(
+                        Day10Twist(state, currentPosition, length),
+                        (currentPosition + length + skipSize) % state.Length));
 
             return finalState.Item1
                 .Take(2)
@@ -632,11 +629,10 @@ namespace AdventOfCode2017
             var finalState = Day10ToLengths(input)
                 .Repeat(64)
                 .Select((length, skipCount) => Tuple.Create(length, skipCount))
-                .Scan(Tuple.Create(startingState, 0),
-                    (state, next) => Tuple.Create(
-                        Day10Twist(state.Item1, state.Item2, next.Item1),
-                        (state.Item2 + next.Item1 + next.Item2) % state.Item1.Length))
-                .Last();
+                .TupleAggregate(startingState, 0,
+                    (state, currentPosition, length, skipSize) => Tuple.Create(
+                        Day10Twist(state, currentPosition, length),
+                        (currentPosition + length + skipSize) % state.Length));
 
             return string.Join("", finalState.Item1
                 .Batch(16)
