@@ -91,6 +91,16 @@ namespace AdventOfCode2017
             }
         }
 
+        public static Tuple<TState1, TState2> TupleAggregate<TInput1, TInput2, TState1, TState2>(
+            this IEnumerable<Tuple<TInput1, TInput2>> input,
+            TState1 seed1,
+            TState2 seed2,
+            Func<TState1, TState2, TInput1, TInput2, Tuple<TState1, TState2>> update)
+        {
+            return input
+                .Aggregate(Tuple.Create(seed1, seed2), (state, next) => update(state.Item1, state.Item2, next.Item1, next.Item2));
+        }
+
         public static IEnumerable<Tuple<T1, T2, T3, T4, T5>> TupleScan<TInput, T1, T2, T3, T4, T5>(
             this IEnumerable<TInput> input,
             T1 seed1,
