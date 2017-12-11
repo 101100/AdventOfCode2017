@@ -90,6 +90,13 @@ namespace AdventOfCode2017
                 Console.WriteLine($"Part 1: {Day10Part1(input)}");
                 Console.WriteLine($"Part 2: {Day10Part2(input)}");
             }
+            else if (day == 11)
+            {
+                var input = Inputs.Day11;
+
+                Console.WriteLine($"Part 1: {Day11Part1(input)}");
+                Console.WriteLine($"Part 2: {Day11Part2(input)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -650,6 +657,92 @@ namespace AdventOfCode2017
                         17, 31, 73, 47, 23
                     })
                 .ToImmutableArray();
+        }
+
+        private static double Day11Part1(string input)
+        {
+            var finalPosition = input
+                .Split(",")
+                .Select(s => s.Trim())
+                .Select(
+                    s =>
+                    {
+                        switch (s)
+                        {
+                            case "s":
+                                return Tuple.Create<double, double>(0, -1);
+                            case "se":
+                                return Tuple.Create<double, double>(1, -0.5);
+                            case "sw":
+                                return Tuple.Create<double, double>(-1, -0.5);
+                            case "n":
+                                return Tuple.Create<double, double>(0, 1);
+                            case "ne":
+                                return Tuple.Create<double, double>(1, 0.5);
+                            case "nw":
+                                return Tuple.Create<double, double>(-1, 0.5);
+                            default:
+                                Console.WriteLine($"F!, s: {s}");
+                                return Tuple.Create<double, double>(0, 0);
+                        }
+                    })
+                .TupleAggregate<double, double, double, double>(0, 0,
+                    (cx, cy, dx, dy) => Tuple.Create(cx + dx, cy + dy));
+
+            var xSteps = Math.Abs(finalPosition.Item1);
+            var y = Math.Abs(finalPosition.Item2);
+
+            Console.WriteLine($"x: {xSteps}, y: {y}");
+
+            var yStepsInX = xSteps / 2;
+
+            var yStepsLeft = y - yStepsInX;
+
+            return xSteps + yStepsLeft;
+        }
+
+        private static double Day11Part2(string input)
+        {
+            return input
+                .Split(",")
+                .Select(s => s.Trim())
+                .Select(
+                    s =>
+                    {
+                        switch (s)
+                        {
+                            case "s":
+                                return Tuple.Create<double, double>(0, -1);
+                            case "se":
+                                return Tuple.Create<double, double>(1, -0.5);
+                            case "sw":
+                                return Tuple.Create<double, double>(-1, -0.5);
+                            case "n":
+                                return Tuple.Create<double, double>(0, 1);
+                            case "ne":
+                                return Tuple.Create<double, double>(1, 0.5);
+                            case "nw":
+                                return Tuple.Create<double, double>(-1, 0.5);
+                            default:
+                                Console.WriteLine($"F!, s: {s}");
+                                return Tuple.Create<double, double>(0, 0);
+                        }
+                    })
+                .TupleScan<double, double, double, double>(0, 0,
+                    (cx, cy, dx, dy) => Tuple.Create(cx + dx, cy + dy))
+                .Select(
+                    t =>
+                    {
+                        var xSteps = Math.Abs(t.Item1);
+                        var y = Math.Abs(t.Item2);
+
+                        var yStepsInX = xSteps / 2;
+
+                        var yStepsLeft = y - yStepsInX;
+
+                        return xSteps + yStepsLeft;
+                    })
+                .Max();
         }
 
     }
