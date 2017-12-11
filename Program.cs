@@ -664,41 +664,38 @@ namespace AdventOfCode2017
             var finalPosition = input
                 .Split(",")
                 .Select(s => s.Trim())
-                .Select(
-                    s =>
-                    {
-                        switch (s)
-                        {
-                            case "s":
-                                return Tuple.Create<double, double>(0, -1);
-                            case "se":
-                                return Tuple.Create<double, double>(1, -0.5);
-                            case "sw":
-                                return Tuple.Create<double, double>(-1, -0.5);
-                            case "n":
-                                return Tuple.Create<double, double>(0, 1);
-                            case "ne":
-                                return Tuple.Create<double, double>(1, 0.5);
-                            case "nw":
-                                return Tuple.Create<double, double>(-1, 0.5);
-                            default:
-                                Console.WriteLine($"F!, s: {s}");
-                                return Tuple.Create<double, double>(0, 0);
-                        }
-                    })
-                .TupleAggregate<double, double, double, double>(0, 0,
+                .Select(Day11DirectionToLocationChange)
+                .TupleAggregate(0d, 0d,
                     (cx, cy, dx, dy) => Tuple.Create(cx + dx, cy + dy));
 
-            var xSteps = Math.Abs(finalPosition.Item1);
-            var y = Math.Abs(finalPosition.Item2);
+            return Day11HexDistance(finalPosition.Item1, finalPosition.Item2);
+        }
 
-            Console.WriteLine($"x: {xSteps}, y: {y}");
+        private static Tuple<double, double> Day11DirectionToLocationChange(string s)
+        {
+            switch (s)
+            {
+                case "s":
+                    return Tuple.Create<double, double>(0, -1);
+                case "se":
+                    return Tuple.Create<double, double>(1, -0.5);
+                case "sw":
+                    return Tuple.Create<double, double>(-1, -0.5);
+                case "n":
+                    return Tuple.Create<double, double>(0, 1);
+                case "ne":
+                    return Tuple.Create<double, double>(1, 0.5);
+                case "nw":
+                    return Tuple.Create<double, double>(-1, 0.5);
+                default:
+                    Console.WriteLine($"Bad direction: {s}");
+                    return Tuple.Create<double, double>(0, 0);
+            }
+        }
 
-            var yStepsInX = xSteps / 2;
-
-            var yStepsLeft = y - yStepsInX;
-
-            return xSteps + yStepsLeft;
+        private static double Day11HexDistance(double x, double y)
+        {
+            return Math.Abs(x) + Math.Max(Math.Abs(y) - Math.Abs(x) / 2, 0);
         }
 
         private static double Day11Part2(string input)
@@ -706,42 +703,10 @@ namespace AdventOfCode2017
             return input
                 .Split(",")
                 .Select(s => s.Trim())
-                .Select(
-                    s =>
-                    {
-                        switch (s)
-                        {
-                            case "s":
-                                return Tuple.Create<double, double>(0, -1);
-                            case "se":
-                                return Tuple.Create<double, double>(1, -0.5);
-                            case "sw":
-                                return Tuple.Create<double, double>(-1, -0.5);
-                            case "n":
-                                return Tuple.Create<double, double>(0, 1);
-                            case "ne":
-                                return Tuple.Create<double, double>(1, 0.5);
-                            case "nw":
-                                return Tuple.Create<double, double>(-1, 0.5);
-                            default:
-                                Console.WriteLine($"F!, s: {s}");
-                                return Tuple.Create<double, double>(0, 0);
-                        }
-                    })
-                .TupleScan<double, double, double, double>(0, 0,
+                .Select(Day11DirectionToLocationChange)
+                .TupleScan(0d, 0d,
                     (cx, cy, dx, dy) => Tuple.Create(cx + dx, cy + dy))
-                .Select(
-                    t =>
-                    {
-                        var xSteps = Math.Abs(t.Item1);
-                        var y = Math.Abs(t.Item2);
-
-                        var yStepsInX = xSteps / 2;
-
-                        var yStepsLeft = y - yStepsInX;
-
-                        return xSteps + yStepsLeft;
-                    })
+                .TupleSelect(Day11HexDistance)
                 .Max();
         }
 

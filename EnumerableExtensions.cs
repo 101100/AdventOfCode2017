@@ -129,6 +129,14 @@ namespace AdventOfCode2017
             }
         }
 
+        public static IEnumerable<TResult> TupleSelect<TInput1, TInput2, TResult>(
+            this IEnumerable<Tuple<TInput1, TInput2>> input,
+            Func<TInput1, TInput2, TResult> selector)
+        {
+            return input
+                .Select(tuple => selector(tuple.Item1, tuple.Item2));
+        }
+
         public static IEnumerable<T> StartWith<T>(this IEnumerable<T> input, T item)
         {
             return new[] {item}
