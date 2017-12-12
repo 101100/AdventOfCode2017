@@ -733,24 +733,22 @@ namespace AdventOfCode2017
                             .ToImmutableArray()))
                 .ToImmutableDictionary(t => t.Item1, t => t.Item2);
 
-            var connected = ImmutableHashSet<int>.Empty;
-            var queue = new Queue<int>();
-            queue.Enqueue(0);
-
-            while (queue.Count > 0)
-            {
-                var next = queue.Dequeue();
-                foreach (var thing in inputs[next])
-                {
-                    if (!connected.Contains(thing))
-                    {
-                        queue.Enqueue(thing);
-                    }
-                }
-                connected = connected.Union(inputs[next]);
-            }
+            var connected = Day12GetConnected(0, inputs);
 
             return connected.Count;
+        }
+
+        private static ImmutableHashSet<int> Day12GetConnected(int startNode, ImmutableDictionary<int, ImmutableArray<int>> inputs)
+        {
+            return EnumerableExtensions.TupleGenerate(
+                ImmutableHashSet<int>.Empty,
+                ImmutableList.Create(startNode),
+                (_, queue) => queue.Count > 0,
+                (connected, queue) => Tuple.Create(
+                    connected.Union(inputs[queue[0]]),
+                    queue.RemoveAt(0).AddRange(inputs[queue[0]].Where(i => !connected.Contains(i)))))
+                .Last()
+                .Item1;
         }
 
         private static int Day12Part2(string input)
@@ -772,32 +770,12 @@ namespace AdventOfCode2017
             var unconnectedNodes = inputs
                 .Select(p => p.Key)
                 .ToImmutableHashSet();
-            var count = 0;
-            while (unconnectedNodes.Count > 0)
-            {
-                count++;
-                var connected = ImmutableHashSet<int>.Empty;
-                var queue = new Queue<int>();
-                queue.Enqueue(unconnectedNodes.First());
 
-                while (queue.Count > 0)
-                {
-                    var next = queue.Dequeue();
-                    foreach (var thing in inputs[next])
-                    {
-                        if (!connected.Contains(thing))
-                        {
-                            queue.Enqueue(thing);
-                        }
-                    }
-
-                    connected = connected.Union(inputs[next]);
-                }
-
-                unconnectedNodes = unconnectedNodes.Except(connected);
-            }
-
-            return count;
+            return EnumerableExtensions.Generate(
+                    unconnectedNodes,
+                    remainingNodes => remainingNodes.Count > 0,
+                    remainingNodes => remainingNodes.Except(Day12GetConnected(remainingNodes.First(), inputs)))
+                .Count();
         }
 
     }
