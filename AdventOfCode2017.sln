@@ -1,20 +1,38 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.0.0
 MinimumVisualStudioVersion = 10.0.0.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode2017", "AdventOfCode2017.csproj", "{FC5ECAB4-3596-436B-A616-E64D9AE6128E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode2017.CSharp", "CSharp\AdventOfCode2017.CSharp.csproj", "{FC5ECAB4-3596-436B-A616-E64D9AE6128E}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "AdventOfCode2017.FSharp", "FSharp\AdventOfCode2017.FSharp.fsproj", "{5863D233-9DDC-4DCE-AA7E-A791043642D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{FC5ECAB4-3596-436B-A616-E64D9AE6128E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FC5ECAB4-3596-436B-A616-E64D9AE6128E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC5ECAB4-3596-436B-A616-E64D9AE6128E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC5ECAB4-3596-436B-A616-E64D9AE6128E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5863D233-9DDC-4DCE-AA7E-A791043642D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5863D233-9DDC-4DCE-AA7E-A791043642D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5863D233-9DDC-4DCE-AA7E-A791043642D2}.Debug|x64.ActiveCfg = Debug|x64
+		{5863D233-9DDC-4DCE-AA7E-A791043642D2}.Debug|x64.Build.0 = Debug|x64
+		{5863D233-9DDC-4DCE-AA7E-A791043642D2}.Debug|x86.ActiveCfg = Debug|x86
+		{5863D233-9DDC-4DCE-AA7E-A791043642D2}.Debug|x86.Build.0 = Debug|x86
+		{5863D233-9DDC-4DCE-AA7E-A791043642D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5863D233-9DDC-4DCE-AA7E-A791043642D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5863D233-9DDC-4DCE-AA7E-A791043642D2}.Release|x64.ActiveCfg = Release|x64
+		{5863D233-9DDC-4DCE-AA7E-A791043642D2}.Release|x64.Build.0 = Release|x64
+		{5863D233-9DDC-4DCE-AA7E-A791043642D2}.Release|x86.ActiveCfg = Release|x86
+		{5863D233-9DDC-4DCE-AA7E-A791043642D2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
