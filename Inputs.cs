@@ -27,5 +27,7 @@ namespace AdventOfCode2017
 
         public static string Day11 => File.ReadAllText("day11.txt");
 
+        public static string Day12 => File.ReadAllText("day12.txt");
+
     }
 }

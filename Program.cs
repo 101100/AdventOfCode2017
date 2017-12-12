@@ -97,6 +97,13 @@ namespace AdventOfCode2017
                 Console.WriteLine($"Part 1: {Day11Part1(input)}");
                 Console.WriteLine($"Part 2: {Day11Part2(input)}");
             }
+            else if (day == 12)
+            {
+                var input = Inputs.Day12;
+
+                Console.WriteLine($"Part 1: {Day12Part1(input)}");
+                Console.WriteLine($"Part 2: {Day12Part2(input)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -708,6 +715,89 @@ namespace AdventOfCode2017
                     (cx, cy, dx, dy) => Tuple.Create(cx + dx, cy + dy))
                 .TupleSelect(Day11HexDistance)
                 .Max();
+        }
+
+        private static int Day12Part1(string input)
+        {
+            var inputs = input
+                .Split("\n")
+                .Select(r => r.Trim())
+                .Select(line => line.Split(" "))
+                .Select(
+                    parts => Tuple.Create(
+                        int.Parse(parts[0]),
+                        parts
+                            .Skip(2)
+                            .Select(s => s.TrimEnd(','))
+                            .Select(int.Parse)
+                            .ToImmutableArray()))
+                .ToImmutableDictionary(t => t.Item1, t => t.Item2);
+
+            var connected = ImmutableHashSet<int>.Empty;
+            var queue = new Queue<int>();
+            queue.Enqueue(0);
+
+            while (queue.Count > 0)
+            {
+                var next = queue.Dequeue();
+                foreach (var thing in inputs[next])
+                {
+                    if (!connected.Contains(thing))
+                    {
+                        queue.Enqueue(thing);
+                    }
+                }
+                connected = connected.Union(inputs[next]);
+            }
+
+            return connected.Count;
+        }
+
+        private static int Day12Part2(string input)
+        {
+            var inputs = input
+                .Split("\n")
+                .Select(r => r.Trim())
+                .Select(line => line.Split(" "))
+                .Select(
+                    parts => Tuple.Create(
+                        int.Parse(parts[0]),
+                        parts
+                            .Skip(2)
+                            .Select(s => s.TrimEnd(','))
+                            .Select(int.Parse)
+                            .ToImmutableArray()))
+                .ToImmutableDictionary(t => t.Item1, t => t.Item2);
+
+            var unconnectedNodes = inputs
+                .Select(p => p.Key)
+                .ToImmutableHashSet();
+            var count = 0;
+            while (unconnectedNodes.Count > 0)
+            {
+                count++;
+                var connected = ImmutableHashSet<int>.Empty;
+                var queue = new Queue<int>();
+                queue.Enqueue(unconnectedNodes.First());
+
+                while (queue.Count > 0)
+                {
+                    var next = queue.Dequeue();
+                    foreach (var thing in inputs[next])
+                    {
+                        if (!connected.Contains(thing))
+                        {
+                            queue.Enqueue(thing);
+                        }
+                    }
+
+                    connected = connected.Union(inputs[next]);
+                }
+
+                unconnectedNodes = unconnectedNodes.Except(connected);
+            }
+
+            return count;
         }
 
     }
