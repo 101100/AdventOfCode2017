@@ -101,6 +101,16 @@ namespace AdventOfCode2017
                 .Aggregate(Tuple.Create(seed1, seed2), (state, next) => update(state.Item1, state.Item2, next.Item1, next.Item2));
         }
 
+        public static IEnumerable<Tuple<T1, T2>> TupleGenerate<T1, T2>(T1 seed1, T2 seed2, Func<T1, T2, bool> predicate, Func<T1, T2, Tuple<T1, T2>> iterate)
+        {
+            var next = Tuple.Create(seed1, seed2);
+            while (predicate(next.Item1, next.Item2))
+            {
+                yield return next;
+                next = iterate(next.Item1, next.Item2);
+            }
+        }
+
         public static IEnumerable<Tuple<TState1, TState2>> TupleScan<TInput1, TInput2, TState1, TState2>(
             this IEnumerable<Tuple<TInput1, TInput2>> input,
             TState1 seed1,
