@@ -17,6 +17,12 @@ charset = utf-8-bom
 indent_size = 2
 insert_final_newline = false
 
+# Use 2-spaces to indent .csproj files
+[*.fsproj]
+charset = utf-8-bom
+indent_size = 2
+insert_final_newline = false
+
 # Use tabs to indent .sln files
 [*.sln]
 indent_style = tab

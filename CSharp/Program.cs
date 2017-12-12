@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using AdventOfCode2017.FSharp;
 
-namespace AdventOfCode2017
+namespace AdventOfCode2017.CSharp
 {
     public static class Program
     {
@@ -24,8 +25,10 @@ namespace AdventOfCode2017
             {
                 var input = Inputs.Day1;
 
-                Console.WriteLine($"Part 1: {Day1Part1(input)}");
-                Console.WriteLine($"Part 2: {Day1Part2(input)}");
+                Console.WriteLine($"Part 1 (C#): {Day1Part1(input)}");
+                Console.WriteLine($"Part 1 (F#): {Day1.part1(input)}");
+                Console.WriteLine($"Part 2 (C#): {Day1Part2(input)}");
+                Console.WriteLine($"Part 2 (F#): {Day1.part2(input)}");
             }
             else if (day == 2)
             {

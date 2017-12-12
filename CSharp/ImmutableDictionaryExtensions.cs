@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 
-namespace AdventOfCode2017
+namespace AdventOfCode2017.CSharp
 {
     public static class ImmutableDictionaryExtensions
     {

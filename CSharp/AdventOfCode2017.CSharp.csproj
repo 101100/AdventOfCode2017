@@ -6,4 +6,7 @@
   <ItemGroup>
     <PackageReference Include="System.Collections.Immutable" Version="1.4.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FSharp\AdventOfCode2017.FSharp.fsproj" />
+  </ItemGroup>
 </Project>
