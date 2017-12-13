@@ -107,6 +107,13 @@ namespace AdventOfCode2017.CSharp
                 Console.WriteLine($"Part 1: {Day12Part1(input)}");
                 Console.WriteLine($"Part 2: {Day12Part2(input)}");
             }
+            else if (day == 13)
+            {
+                var input = Inputs.Day13;
+
+                Console.WriteLine($"Part 1: {Day13Part1(input)}");
+                Console.WriteLine($"Part 2: {Day13Part2(input)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -781,5 +788,60 @@ namespace AdventOfCode2017.CSharp
                 .Count();
         }
 
+        private static int Day13Part1(string input)
+        {
+            var inputs = input
+                .Split("\n")
+                .Select(r => r.Trim())
+                .Select(line => line.Split(" "))
+                .Select(
+                    parts => Tuple.Create(
+                        int.Parse(parts[0].TrimEnd(':')),
+                        int.Parse(parts[1])))
+                .ToImmutableDictionary(t => t.Item1, t => t.Item2);
+
+            return EnumerableExtensions.Generate(
+                Tuple.Create(0, 0, inputs.ToImmutableDictionary(p => p.Key, _ => Tuple.Create(0, true))),
+                t => t.Item1 <= inputs.Select(p => p.Key).Max(),
+                t => Tuple.Create(
+                    t.Item1 + 1,
+                    t.Item2 + (t.Item3.GetValueOrDefault(t.Item1, Tuple.Create(-1, false)).Item1 == 0
+                        ? t.Item1 * inputs[t.Item1]
+                        : 0),
+                    Day13NextStep(t.Item3, inputs)))
+                .Last()
+                .Item2;
+        }
+
+        private static ImmutableDictionary<int, Tuple<int, bool>> Day13NextStep(ImmutableDictionary<int, Tuple<int, bool>> oldPositions, ImmutableDictionary<int, int> inputs)
+        {
+            return oldPositions
+                .ToImmutableDictionary(p => p.Key, p => p.Value.Item2
+                    ? p.Value.Item1 >= inputs[p.Key] - 1 ? Tuple.Create(inputs[p.Key] - 2, false) : Tuple.Create(p.Value.Item1 + 1, true)
+                    : p.Value.Item1 <= 0 ? Tuple.Create(1, true) : Tuple.Create(p.Value.Item1 - 1, false));
+        }
+
+        private static int Day13Part2(string input)
+        {
+            var inputs = input
+                .Split("\n")
+                .Select(r => r.Trim())
+                .Select(line => line.Split(" "))
+                .Select(
+                    parts => Tuple.Create(
+                        int.Parse(parts[0].TrimEnd(':')),
+                        int.Parse(parts[1])))
+                .ToImmutableDictionary(t => t.Item1, t => t.Item2);
+
+            return Enumerable
+                .Range(0, 10000000)
+                .First(startTime => Program.Day13Caught(startTime, inputs));
+        }
+
+        private static bool Day13Caught(int startTime, ImmutableDictionary<int, int> inputs)
+        {
+            return inputs
+                .All(p => (p.Key + startTime) % ((p.Value - 1) * 2) != 0);
+        }
     }
 }
