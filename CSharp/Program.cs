@@ -114,6 +114,13 @@ namespace AdventOfCode2017.CSharp
                 Console.WriteLine($"Part 1: {Day13Part1(input)}");
                 Console.WriteLine($"Part 2: {Day13Part2(input)}");
             }
+            else if (day == 14)
+            {
+                var input = Inputs.Day14;
+
+                Console.WriteLine($"Part 1: {Day14Part1(input)}");
+                Console.WriteLine($"Part 2: {Day14Part2(input)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -740,7 +747,7 @@ namespace AdventOfCode2017.CSharp
                             .Skip(2)
                             .Select(s => s.TrimEnd(','))
                             .Select(int.Parse)
-                            .ToImmutableArray()))
+                            .ToImmutableHashSet()))
                 .ToImmutableDictionary(t => t.Item1, t => t.Item2);
 
             var connected = Day12GetConnected(0, inputs);
@@ -748,15 +755,15 @@ namespace AdventOfCode2017.CSharp
             return connected.Count;
         }
 
-        private static ImmutableHashSet<int> Day12GetConnected(int startNode, ImmutableDictionary<int, ImmutableArray<int>> inputs)
+        private static ImmutableHashSet<int> Day12GetConnected(int startNode, ImmutableDictionary<int, ImmutableHashSet<int>> inputs)
         {
             return EnumerableExtensions.TupleGenerate(
-                ImmutableHashSet<int>.Empty,
+                new [] {startNode}.ToImmutableHashSet(),
                 ImmutableList.Create(startNode),
                 (_, queue) => queue.Count > 0,
                 (connected, queue) => Tuple.Create(
                     connected.Union(inputs[queue[0]]),
-                    queue.RemoveAt(0).AddRange(inputs[queue[0]].Where(i => !connected.Contains(i)))))
+                    queue.RemoveAt(0).AddRange(inputs[queue[0]].Except(connected))))
                 .Last()
                 .Item1;
         }
@@ -774,7 +781,7 @@ namespace AdventOfCode2017.CSharp
                             .Skip(2)
                             .Select(s => s.TrimEnd(','))
                             .Select(int.Parse)
-                            .ToImmutableArray()))
+                            .ToImmutableHashSet()))
                 .ToImmutableDictionary(t => t.Item1, t => t.Item2);
 
             var unconnectedNodes = inputs
@@ -843,5 +850,85 @@ namespace AdventOfCode2017.CSharp
             return inputs
                 .All(p => (p.Key + startTime) % ((p.Value - 1) * 2) != 0);
         }
+
+        private static string Day14KnotHash(string input)
+        {
+            var startingState = Enumerable
+                .Range(0, 256)
+                .ToImmutableArray();
+
+            var finalState = Day10ToLengths(input)
+                .Repeat(64)
+                .Select((length, skipCount) => Tuple.Create(length, skipCount))
+                .TupleAggregate(startingState, 0,
+                    (state, currentPosition, length, skipSize) => Tuple.Create(
+                        Day10Twist(state, currentPosition, length),
+                        (currentPosition + length + skipSize) % state.Length));
+
+            return string.Join("", finalState.Item1
+                .Batch(16)
+                .Select(b => b.Aggregate(0, (x, y) => x ^ y))
+                .Select(b => Convert.ToString(b, 2).PadLeft(8, '0')));
+        }
+
+        private static int Day14Part1(string input)
+        {
+            return Enumerable
+                .Range(0, 128)
+                .Select(i => $"{input}-{i}")
+                .Select(s => Day14KnotHash(s))
+                .Sum(hash => hash.Count(c => c == '1'));
+        }
+
+        private static int Day14Part2(string input)
+        {
+            var usedArray = Enumerable
+                .Range(0, 128)
+                .Select(i => $"{input}-{i}")
+                .SelectMany(s => Day14KnotHash(s).Select(c => c == '1'))
+                .ToImmutableArray();
+
+            var connections = Enumerable.Range(0, 128 * 128)
+                .Where(i => usedArray[i])
+                .ToImmutableDictionary(i => i, i => Day14GetNeighbours(i, usedArray).ToImmutableHashSet());
+
+            var unconnectedNodes = connections
+                .Select(p => p.Key)
+                .ToImmutableHashSet();
+
+            return EnumerableExtensions.Generate(
+                    Tuple.Create(unconnectedNodes, ImmutableHashSet<int>.Empty),
+                    t => t.Item1.Count > 0,
+                    t =>
+                    {
+                        var thing = Day12GetConnected(t.Item1.First(), connections);
+                        return Tuple.Create(t.Item1.Except(thing), thing);
+                    })
+                .Count();
+        }
+
+        private static IEnumerable<int> Day14GetNeighbours(int i, ImmutableArray<bool> usedArray)
+        {
+            var x = i % 128;
+            var y = i / 128;
+
+            if (x - 1 >= 0 && usedArray[i - 1])
+            {
+                yield return i - 1;
+            }
+            if (x + 1 < 128 && usedArray[i + 1])
+            {
+                yield return i + 1;
+            }
+            if (y - 1 >= 0 && usedArray[i - 128])
+            {
+                yield return i - 128;
+            }
+            if (y + 1 < 128 && usedArray[i + 128])
+            {
+                yield return i + 128;
+            }
+        }
+
     }
 }
