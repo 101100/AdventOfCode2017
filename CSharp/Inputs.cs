@@ -34,6 +34,9 @@ namespace AdventOfCode2017.CSharp
 
         public const string Day14 = "ugkiagan";
 
+        public const int Day15A = 722;
+        public const int Day15B = 354;
+
         private static string GetDataFileText(string filename)
         {
             return File.ReadAllText(Path.Combine(
