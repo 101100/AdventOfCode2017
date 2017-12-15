@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+
 using AdventOfCode2017.FSharp;
 
 namespace AdventOfCode2017.CSharp
@@ -653,21 +654,7 @@ namespace AdventOfCode2017.CSharp
 
         private static string Day10Part2(string input)
         {
-            var startingState = Enumerable
-                .Range(0, 256)
-                .ToImmutableArray();
-
-            var finalState = Day10ToLengths(input)
-                .Repeat(64)
-                .Select((length, skipCount) => Tuple.Create(length, skipCount))
-                .TupleAggregate(startingState, 0,
-                    (state, currentPosition, length, skipSize) => Tuple.Create(
-                        Day10Twist(state, currentPosition, length),
-                        (currentPosition + length + skipSize) % state.Length));
-
-            return string.Join("", finalState.Item1
-                .Batch(16)
-                .Select(b => b.Aggregate(0, (x, y) => x ^ y))
+            return string.Join("", Day10KnotHash(input)
                 .Select(b => string.Format("{0:x2}", b)));
         }
 
@@ -681,6 +668,25 @@ namespace AdventOfCode2017.CSharp
                         17, 31, 73, 47, 23
                     })
                 .ToImmutableArray();
+        }
+
+        private static IEnumerable<byte> Day10KnotHash(string input)
+        {
+            var startingState = Enumerable
+                .Range(0, 256)
+                .ToImmutableArray();
+
+            var finalState = Day10ToLengths(input)
+                .Repeat(64)
+                .Select((length, skipCount) => Tuple.Create(length, skipCount))
+                .TupleAggregate(startingState, 0,
+                    (state, currentPosition, length, skipSize) => Tuple.Create(
+                        Day10Twist(state, currentPosition, length),
+                        (currentPosition + length + skipSize) % state.Length));
+
+            return finalState.Item1
+                .Batch(16)
+                .Select(b => (byte) b.Aggregate(0, (x, y) => x ^ y));
         }
 
         private static double Day11Part1(string input)
@@ -842,7 +848,7 @@ namespace AdventOfCode2017.CSharp
 
             return Enumerable
                 .Range(0, 10000000)
-                .First(startTime => Program.Day13Caught(startTime, inputs));
+                .First(startTime => Day13Caught(startTime, inputs));
         }
 
         private static bool Day13Caught(int startTime, ImmutableDictionary<int, int> inputs)
@@ -853,39 +859,28 @@ namespace AdventOfCode2017.CSharp
 
         private static string Day14KnotHash(string input)
         {
-            var startingState = Enumerable
-                .Range(0, 256)
-                .ToImmutableArray();
-
-            var finalState = Day10ToLengths(input)
-                .Repeat(64)
-                .Select((length, skipCount) => Tuple.Create(length, skipCount))
-                .TupleAggregate(startingState, 0,
-                    (state, currentPosition, length, skipSize) => Tuple.Create(
-                        Day10Twist(state, currentPosition, length),
-                        (currentPosition + length + skipSize) % state.Length));
-
-            return string.Join("", finalState.Item1
-                .Batch(16)
-                .Select(b => b.Aggregate(0, (x, y) => x ^ y))
+            return string.Join("", Day10KnotHash(input)
                 .Select(b => Convert.ToString(b, 2).PadLeft(8, '0')));
         }
 
         private static int Day14Part1(string input)
         {
+            return Day14Parse(input)
+                .Sum(hash => hash.Count(c => c == '1'));
+        }
+
+        private static IEnumerable<string> Day14Parse(string input)
+        {
             return Enumerable
                 .Range(0, 128)
                 .Select(i => $"{input}-{i}")
-                .Select(s => Day14KnotHash(s))
-                .Sum(hash => hash.Count(c => c == '1'));
+                .Select(Day14KnotHash);
         }
 
         private static int Day14Part2(string input)
         {
-            var usedArray = Enumerable
-                .Range(0, 128)
-                .Select(i => $"{input}-{i}")
-                .SelectMany(s => Day14KnotHash(s).Select(c => c == '1'))
+            var usedArray = Day14Parse(input)
+                .SelectMany(hash => hash.Select(c => c == '1'))
                 .ToImmutableArray();
 
             var connections = Enumerable.Range(0, 128 * 128)
