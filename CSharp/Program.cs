@@ -122,6 +122,14 @@ namespace AdventOfCode2017.CSharp
                 Console.WriteLine($"Part 1: {Day14Part1(input)}");
                 Console.WriteLine($"Part 2: {Day14Part2(input)}");
             }
+            else if (day == 15)
+            {
+                var inputA = Inputs.Day15A;
+                var inputB = Inputs.Day15B;
+
+                Console.WriteLine($"Part 1: {Day15Part1(inputA, inputB)}");
+                Console.WriteLine($"Part 2: {Day15Part2(inputA, inputB)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -923,6 +931,37 @@ namespace AdventOfCode2017.CSharp
             {
                 yield return i + 128;
             }
+        }
+
+        private static int Day15Part1(int aStart, int bStart)
+        {
+            return Program.Day15Generator(aStart, 16807)
+                .Zip(Program.Day15Generator(bStart, 48271), Tuple.Create)
+                .Take(40000000)
+                .Count(t => (t.Item1 & 0xFFFF) == (t.Item2 & 0xFFFF));
+        }
+
+        private static int Day15Part2(int aStart, int bStart)
+        {
+            return Program.Day15Generator(aStart, 16807).Where(Day15Multiple(4))
+                .Zip(Program.Day15Generator(bStart, 48271).Where(Day15Multiple(8)), Tuple.Create)
+                .Take(5000000)
+                .Count(t => (t.Item1 & 0xFFFF) == (t.Item2 & 0xFFFF));
+        }
+
+        private static IEnumerable<long> Day15Generator(long seed, long factor)
+        {
+            return EnumerableExtensions
+                .Generate(
+                    seed,
+                    _ => true,
+                    last => last * factor % 2147483647)
+                .Skip(1);
+        }
+
+        private static Func<long, bool> Day15Multiple(int requiredMultiple)
+        {
+            return l => l % requiredMultiple == 0;
         }
 
     }
