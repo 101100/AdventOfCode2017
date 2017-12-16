@@ -130,6 +130,13 @@ namespace AdventOfCode2017.CSharp
                 Console.WriteLine($"Part 1: {Day15Part1(inputA, inputB)}");
                 Console.WriteLine($"Part 2: {Day15Part2(inputA, inputB)}");
             }
+            else if (day == 16)
+            {
+                var input = Inputs.Day16;
+
+                Console.WriteLine($"Part 1: {Day16Part1(input)}");
+                Console.WriteLine($"Part 2: {Day16Part2(input)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -962,6 +969,81 @@ namespace AdventOfCode2017.CSharp
         private static Func<long, bool> Day15Multiple(int requiredMultiple)
         {
             return l => l % requiredMultiple == 0;
+        }
+
+        private static string Day16Part1(string input)
+        {
+            var inputs = input
+                .Split(",")
+                .Select(p =>
+                {
+                    var a = p[0];
+                    var parts = p.Substring(1).Split('/');
+                    return Tuple.Create(a, parts[0], parts.Length > 1 ? parts[1] : string.Empty);
+                });
+
+            return Day16OneDance(inputs, "abcdefghijklmnop");
+        }
+
+        private static string Day16OneDance(IEnumerable<Tuple<char, string, string>> inputs, string start)
+        {
+            return inputs
+                .Aggregate(
+                    start,
+                    (last, move) =>
+                    {
+                        switch (move.Item1)
+                        {
+                            case 's':
+                                var amount = int.Parse(move.Item2);
+                                return new string(last
+                                    .Skip(16 - amount)
+                                    .Concat(last.Take(16 - amount))
+                                    .ToArray());
+                            case 'x':
+                                var index1 = int.Parse(move.Item2);
+                                var index2 = int.Parse(move.Item3);
+                                return new string(last
+                                    .Select((c, i) => i == index1 ? last[index2]
+                                        : i == index2 ? last[index1]
+                                        : c)
+                                    .ToArray());
+                            default:
+                                var ch1 = move.Item2[0];
+                                var ch2 = move.Item3[0];
+                                return new string(last
+                                    .Select(c => c == ch1 ? ch2
+                                        : c == ch2 ? ch1
+                                        : c)
+                                    .ToArray());
+                        }
+                    });
+        }
+
+        private static string Day16Part2(string input)
+        {
+            var inputs = input
+                .Split(",")
+                .Select(p =>
+                {
+                    var a = p[0];
+                    var parts = p.Substring(1).Split('/');
+                    return Tuple.Create(a, parts[0], parts.Length > 1 ? parts[1] : string.Empty);
+                })
+                .ToArray();
+
+            var period = EnumerableExtensions.Generate(
+                    "abcdefghijklmnop",
+                    _ => true,
+                    last => Day16OneDance(inputs, last))
+                .Select((s, i) => Tuple.Create(s, i))
+                .Skip(1)
+                .TakeWhile(s => !string.Equals(s.Item1, "abcdefghijklmnop"))
+                .Count() + 1;
+
+            var extraDances = 1000000000l % 36;
+
+            return Day16OneDance(inputs.Repeat((int) extraDances), "abcdefghijklmnop");
         }
 
     }
