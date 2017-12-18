@@ -137,6 +137,13 @@ namespace AdventOfCode2017.CSharp
                 Console.WriteLine($"Part 1: {Day16Part1(input)}");
                 Console.WriteLine($"Part 2: {Day16Part2(input)}");
             }
+            else if (day == 17)
+            {
+                var input = GetIntInput(args) ?? Inputs.Day17;
+
+                Console.WriteLine($"Part 1: {Day17Part1(input)}");
+                Console.WriteLine($"Part 2: {Day17Part2(input)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -1044,6 +1051,43 @@ namespace AdventOfCode2017.CSharp
             var extraDances = 1000000000l % 36;
 
             return Day16OneDance(inputs.Repeat((int) extraDances), "abcdefghijklmnop");
+        }
+
+        private static int Day17Part1(int input)
+        {
+            var finalState = Day17Spinlock1(steps: input, lastValue: 2017)
+                .Last();
+
+            return finalState.Item2[finalState.Item1 + 1];
+        }
+
+        private static IEnumerable<Tuple<int, ImmutableList<int>>> Day17Spinlock1(int steps, int lastValue)
+        {
+            return EnumerableExtensions.TupleGenerate(
+                    0,
+                    ImmutableList.Create<int>(0),
+                    (_, buffer) => buffer.Count <= lastValue + 1,
+                    (currentPosition, buffer) => Tuple.Create(
+                        (currentPosition + steps) % buffer.Count + 1,
+                        buffer.Insert((currentPosition + steps) % buffer.Count + 1, buffer.Count)));
+        }
+
+        private static int Day17Part2(int input)
+        {
+            return Day17Spinlock1BeforeZero(steps: input, repetitions: 50000000)
+                .Last()
+                .Item2;
+        }
+
+        private static IEnumerable<Tuple<int, int>> Day17Spinlock1BeforeZero(int steps, int repetitions)
+        {
+            return Enumerable.Range(1, repetitions)
+                .TupleScan(
+                    0,
+                    -1,
+                    (currentPosition, valueAfterZero, next) => Tuple.Create(
+                        (currentPosition + steps) % next + 1,
+                        (currentPosition + steps) % next == 0 ? next : valueAfterZero));
         }
 
     }
