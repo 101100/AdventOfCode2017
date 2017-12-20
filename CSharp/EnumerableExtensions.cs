@@ -91,6 +91,14 @@ namespace AdventOfCode2017.CSharp
             }
         }
 
+        public static IEnumerable<string> SelectLines(this string input)
+        {
+            return input
+                .Split("\n")
+                .Select(r => r.Trim())
+                .Where(s => s.Length > 0);
+        }
+
         public static Tuple<TState1, TState2> TupleAggregate<TInput1, TInput2, TState1, TState2>(
             this IEnumerable<Tuple<TInput1, TInput2>> input,
             TState1 seed1,

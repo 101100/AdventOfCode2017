@@ -183,8 +183,7 @@ namespace AdventOfCode2017.CSharp
         private static int Day2Part1(string input)
         {
             return input
-                .Split("\n")
-                .Select(r => r.Trim())
+                .SelectLines()
                 .Select(row => row
                     .Split("\t")
                     .Select(int.Parse)
@@ -196,8 +195,7 @@ namespace AdventOfCode2017.CSharp
         private static int Day2Part2(string input)
         {
             return input
-                .Split("\n")
-                .Select(r => r.Trim())
+                .SelectLines()
                 .Select(row => row
                     .Split("\t")
                     .Select(int.Parse)
@@ -327,8 +325,7 @@ namespace AdventOfCode2017.CSharp
         private static int Day4Part1(string input)
         {
             return input
-                .Split("\n")
-                .Select(r => r.Trim())
+                .SelectLines()
                 .Select(row => row
                     .Split(" ")
                     .ToArray())
@@ -341,8 +338,7 @@ namespace AdventOfCode2017.CSharp
         private static int Day4Part2(string input)
         {
             return input
-                .Split("\n")
-                .Select(r => r.Trim())
+                .SelectLines()
                 .Select(row => row
                     .Split(" ")
                     .ToArray())
@@ -355,8 +351,8 @@ namespace AdventOfCode2017.CSharp
         private static int Day5Part1(string input)
         {
             var startingCode = input
-                .Split("\n")
-                .Select(r => int.Parse(r.Trim()))
+                .SelectLines()
+                .Select(int.Parse)
                 .ToImmutableList();
 
             return EnumerableExtensions
@@ -371,8 +367,8 @@ namespace AdventOfCode2017.CSharp
         private static int Day5Part2(string input)
         {
             var startingCode = input
-                .Split("\n")
-                .Select(r => int.Parse(r.Trim()))
+                .SelectLines()
+                .Select(int.Parse)
                 .ToImmutableList();
 
             return EnumerableExtensions
@@ -442,8 +438,7 @@ namespace AdventOfCode2017.CSharp
         private static string Day7Part1(string input)
         {
             var inputs = input
-                .Split("\n")
-                .Select(r => r.Trim())
+                .SelectLines()
                 .Select(line => line.Split(" "))
                 .Select(parts => Tuple.Create(
                     parts[0],
@@ -466,8 +461,7 @@ namespace AdventOfCode2017.CSharp
         private static int Day7Part2(string input)
         {
             var inputs = input
-                .Split("\n")
-                .Select(r => r.Trim())
+                .SelectLines()
                 .Select(line => line.Split(" "))
                 .Select(parts => Tuple.Create(
                     parts[0],
@@ -554,8 +548,7 @@ namespace AdventOfCode2017.CSharp
         private static int Day8Part1(string input)
         {
             return input
-                .Split("\n")
-                .Select(r => r.Trim())
+                .SelectLines()
                 .Select(line => line.Split(" "))
                 .Select(parts => Tuple.Create(
                     parts[0],
@@ -577,8 +570,7 @@ namespace AdventOfCode2017.CSharp
         private static int Day8Part2(string input)
         {
             return input
-                .Split("\n")
-                .Select(r => r.Trim())
+                .SelectLines()
                 .Select(line => line.Split(" "))
                 .Select(parts => Tuple.Create(
                     parts[0],
@@ -765,8 +757,7 @@ namespace AdventOfCode2017.CSharp
         private static int Day12Part1(string input)
         {
             var inputs = input
-                .Split("\n")
-                .Select(r => r.Trim())
+                .SelectLines()
                 .Select(line => line.Split(" "))
                 .Select(
                     parts => Tuple.Create(
@@ -799,8 +790,7 @@ namespace AdventOfCode2017.CSharp
         private static int Day12Part2(string input)
         {
             var inputs = input
-                .Split("\n")
-                .Select(r => r.Trim())
+                .SelectLines()
                 .Select(line => line.Split(" "))
                 .Select(
                     parts => Tuple.Create(
@@ -826,8 +816,7 @@ namespace AdventOfCode2017.CSharp
         private static int Day13Part1(string input)
         {
             var inputs = input
-                .Split("\n")
-                .Select(r => r.Trim())
+                .SelectLines()
                 .Select(line => line.Split(" "))
                 .Select(
                     parts => Tuple.Create(
@@ -859,8 +848,7 @@ namespace AdventOfCode2017.CSharp
         private static int Day13Part2(string input)
         {
             var inputs = input
-                .Split("\n")
-                .Select(r => r.Trim())
+                .SelectLines()
                 .Select(line => line.Split(" "))
                 .Select(
                     parts => Tuple.Create(
