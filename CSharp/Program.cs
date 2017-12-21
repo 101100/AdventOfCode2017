@@ -144,6 +144,13 @@ namespace AdventOfCode2017.CSharp
                 Console.WriteLine($"Part 1: {Day17Part1(input)}");
                 Console.WriteLine($"Part 2: {Day17Part2(input)}");
             }
+            else if (day == 18)
+            {
+                var input = Inputs.Day18;
+
+                Console.WriteLine($"Part 1: {Day18Part1(input)}");
+                Console.WriteLine($"Part 2: {Day18Part2(input)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -1078,5 +1085,166 @@ namespace AdventOfCode2017.CSharp
                         (currentPosition + steps) % next == 0 ? next : valueAfterZero));
         }
 
+        private static long Day18Part1(string input)
+        {
+            var instructions = input
+                .SelectLines()
+                .Select(line => line.Split(" "))
+                .Select(
+                    parts => Tuple.Create(
+                        parts[0],
+                        parts[1],
+                        parts.Length > 2 ? parts[2] : string.Empty))
+                .ToImmutableArray();
+
+            return Day18GetRecoveredNote(instructions, -1, 0, ImmutableDictionary<char, long>.Empty);
+        }
+
+        private static long Day18GetRecoveredNote(
+            ImmutableArray<Tuple<string, string, string>> instructions,
+            long lastNote,
+            int instructionPointer,
+            ImmutableDictionary<char, long> registers)
+        {
+            var instruction = instructions[instructionPointer];
+
+            switch (instruction.Item1)
+            {
+                case "snd":
+                {
+                    var valueOfX = Day18ValueOfX(registers, instruction);
+                    return Day18GetRecoveredNote(instructions, valueOfX, instructionPointer + 1, registers);
+                }
+                case "set":
+                {
+                    var valueOfY = Day18ValueOfY(registers, instruction);
+                    return Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, _ => valueOfY));
+                }
+                case "add":
+                {
+                    var valueOfY = Day18ValueOfY(registers, instruction);
+                    return Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x + valueOfY));
+                }
+                case "mul":
+                {
+                    var valueOfY = Day18ValueOfY(registers, instruction);
+                    return Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x * valueOfY));
+                }
+                case "mod":
+                {
+                    var valueOfY = Day18ValueOfY(registers, instruction);
+                    return Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x % valueOfY));
+                }
+                case "rcv":
+                {
+                    var valueOfX = Day18ValueOfX(registers, instruction);
+                    return valueOfX != 0
+                        ? lastNote
+                        : Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers);
+                }
+                case "jgz":
+                {
+                    var valueOfX = Day18ValueOfX(registers, instruction);
+                    var valueOfY = Day18ValueOfY(registers, instruction);
+                    return valueOfX > 0
+                        ? Day18GetRecoveredNote(instructions, lastNote, (int) (instructionPointer + valueOfY), registers)
+                        : Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers);
+                }
+                default:
+                    throw new InvalidOperationException($"Got invalid instruction: {instruction}");
+            }
+        }
+
+        private static long Day18ValueOfX(ImmutableDictionary<char, long> registers, Tuple<string, string, string> instruction)
+        {
+            long parsedX;
+            var valueOfX = long.TryParse(instruction.Item2, out parsedX) ? parsedX : registers.GetValueOrDefault(instruction.Item2[0], 0);
+            return valueOfX;
+        }
+
+        private static long Day18ValueOfY(ImmutableDictionary<char, long> registers, Tuple<string, string, string> instruction)
+        {
+            long parsedY;
+            var valueOfY = long.TryParse(instruction.Item3, out parsedY) ? parsedY : registers.GetValueOrDefault(instruction.Item3[0], 0);
+            return valueOfY;
+        }
+
+        private static long Day18Part2(string input)
+        {
+            var instructions = input
+                .SelectLines()
+                .Select(line => line.Split(" "))
+                .Select(
+                    parts => Tuple.Create(
+                        parts[0],
+                        parts[1],
+                        parts.Length > 2 ? parts[2] : string.Empty))
+                .ToImmutableArray();
+
+            return EnumerableExtensions.TupleGenerate(
+                Tuple.Create(ImmutableList<long>.Empty, 0, ImmutableDictionary<char, long>.Empty.Add('p', 0)),
+                Tuple.Create(ImmutableList<long>.Empty, 0, ImmutableDictionary<char, long>.Empty.Add('p', 1)),
+                0,
+                (program0, program1, turn) => program0.Item1.Count + program1.Item1.Count > 0 || program0.Item2 == 0,
+                (program0, program1, turn) => turn == 0
+                    ? Tuple.Create(Day18RunOnce(instructions, program1.Item1, ImmutableList<long>.Empty, program0.Item2, program0.Item3), program1, 1)
+                    : Tuple.Create(program0, Day18RunOnce(instructions, program0.Item1, ImmutableList<long>.Empty, program1.Item2, program1.Item3), 0))
+                .Sum(state => state.Item2.Item1.Count) / 2;
+        }
+
+        private static Tuple<ImmutableList<long>, int, ImmutableDictionary<char, long>> Day18RunOnce(
+            ImmutableArray<Tuple<string, string, string>> instructions,
+            ImmutableList<long> receiveQueue,
+            ImmutableList<long> sendQueue,
+            int instructionPointer,
+            ImmutableDictionary<char, long> registers)
+        {
+            var instruction = instructions[instructionPointer];
+
+            switch (instruction.Item1)
+            {
+                case "snd":
+                {
+                    var valueOfX = Day18ValueOfX(registers, instruction);
+                    return Day18RunOnce(instructions, receiveQueue, sendQueue.Add(valueOfX), instructionPointer + 1, registers);
+                }
+                case "set":
+                {
+                    var valueOfY = Day18ValueOfY(registers, instruction);
+                    return Day18RunOnce(instructions, receiveQueue, sendQueue, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, _ => valueOfY));
+                }
+                case "add":
+                {
+                    var valueOfY = Day18ValueOfY(registers, instruction);
+                    return Day18RunOnce(instructions, receiveQueue, sendQueue, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x + valueOfY));
+                }
+                case "mul":
+                {
+                    var valueOfY = Day18ValueOfY(registers, instruction);
+                    return Day18RunOnce(instructions, receiveQueue, sendQueue, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x * valueOfY));
+                }
+                case "mod":
+                {
+                    var valueOfY = Day18ValueOfY(registers, instruction);
+                    return Day18RunOnce(instructions, receiveQueue, sendQueue, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x % valueOfY));
+                }
+                case "rcv":
+                {
+                    return receiveQueue.Count != 0
+                        ? Day18RunOnce(instructions, receiveQueue.RemoveAt(0), sendQueue, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, _ => receiveQueue[0]))
+                        : Tuple.Create(sendQueue, instructionPointer, registers);
+                }
+                case "jgz":
+                {
+                    var valueOfX = Day18ValueOfX(registers, instruction);
+                    var valueOfY = Day18ValueOfY(registers, instruction);
+                    return valueOfX > 0
+                        ? Day18RunOnce(instructions, receiveQueue, sendQueue, (int) (instructionPointer + valueOfY), registers)
+                        : Day18RunOnce(instructions, receiveQueue, sendQueue, instructionPointer + 1, registers);
+                }
+                default:
+                    throw new InvalidOperationException($"Got invalid instruction: {instruction}");
+            }
+        }
     }
 }

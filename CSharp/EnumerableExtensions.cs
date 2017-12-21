@@ -109,6 +109,17 @@ namespace AdventOfCode2017.CSharp
                 .Aggregate(Tuple.Create(seed1, seed2), (state, next) => update(state.Item1, state.Item2, next.Item1, next.Item2));
         }
 
+        public static Tuple<TState1, TState2, TState3> TupleAggregate<TInput1, TInput2, TInput3, TState1, TState2, TState3>(
+            this IEnumerable<Tuple<TInput1, TInput2, TInput3>> input,
+            TState1 seed1,
+            TState2 seed2,
+            TState3 seed3,
+            Func<TState1, TState2, TState3, TInput1, TInput2, TInput3, Tuple<TState1, TState2, TState3>> update)
+        {
+            return input
+                .Aggregate(Tuple.Create(seed1, seed2, seed3), (state, next) => update(state.Item1, state.Item2, state.Item3, next.Item1, next.Item2, next.Item3));
+        }
+
         public static IEnumerable<Tuple<T1, T2>> TupleGenerate<T1, T2>(T1 seed1, T2 seed2, Func<T1, T2, bool> predicate, Func<T1, T2, Tuple<T1, T2>> iterate)
         {
             var next = Tuple.Create(seed1, seed2);
