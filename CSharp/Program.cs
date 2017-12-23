@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 using AdventOfCode2017.FSharp;
 
@@ -157,6 +158,13 @@ namespace AdventOfCode2017.CSharp
 
                 Console.WriteLine($"Part 1: {Day19Part1(input)}");
                 Console.WriteLine($"Part 2: {Day19Part2(input)}");
+            }
+            else if (day == 20)
+            {
+                var input = Inputs.Day20;
+
+                Console.WriteLine($"Part 1: {Day20Part1(input)}");
+                Console.WriteLine($"Part 2: {Day20Part2(input)}");
             }
             else
             {
@@ -1050,7 +1058,7 @@ namespace AdventOfCode2017.CSharp
                 .TakeWhile(s => !string.Equals(s.Item1, "abcdefghijklmnop"))
                 .Count() + 1;
 
-            var extraDances = 1000000000l % 36;
+            var extraDances = 1000000000L % 36;
 
             return Day16OneDance(inputs.Repeat((int) extraDances), "abcdefghijklmnop");
         }
@@ -1334,6 +1342,91 @@ namespace AdventOfCode2017.CSharp
                     (_row, _col, direction) => direction != 's',
                     (row, col, direction) => Day19GetNextStep(row, col, direction, map))
                 .Count();
+        }
+
+        private static int Day20Part1(string input)
+        {
+            var vectors = input
+                .SelectLines()
+                .Select(l => Regex
+                    .Replace(l, " ?[pav]=<|>", "")
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToImmutableArray());
+
+            return Program.Day20GetSlowest(vectors);
+        }
+
+        private static int Day20GetSlowest(IEnumerable<ImmutableArray<int>> vectors)
+        {
+            var manhattanAccelerations = vectors
+                .Select<ImmutableArray<int>, int>(v => v.TakeLast(3).Select(Math.Abs).Sum());
+
+            return manhattanAccelerations
+                .Select((accel, index) => Tuple.Create(index, accel))
+                .OrderBy(t => t.Item2)
+                .First()
+                .Item1;
+        }
+
+        private static int Day20Part2(string input)
+        {
+            var vectors = input
+                .SelectLines()
+                .Select(l => Regex
+                    .Replace(l, " ?[pav]=<|>", "")
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToImmutableArray())
+                .ToImmutableArray();
+
+            var slowest = Day20GetSlowest(vectors);
+
+            var states = EnumerableExtensions.Generate(
+                vectors,
+                v => Day20GetClosest(v) != Day20DistanceFromOrigin(v[slowest]),
+                v => v.Select(Day20DoStep).ToImmutableArray());
+
+            return states
+                .Scan(
+                    ImmutableHashSet<int>.Empty,
+                    (removed, state) => removed.Union(
+                        state
+                            .Select((vector, index) => Tuple.Create(index, Tuple.Create(vector[0], vector[1], vector[2])))
+                            .Where(t => !removed.Contains(t.Item1))
+                            .GroupBy(t => t.Item2)
+                            .Where(g => g.Count() > 1)
+                            .SelectMany(g => g.Select(t => t.Item1))))
+                .Select(removed => vectors.Length - removed.Count)
+                .Last();
+        }
+
+        private static long Day20GetClosest(ImmutableArray<ImmutableArray<int>> vectors)
+        {
+            return vectors
+                .Select(Program.Day20DistanceFromOrigin)
+                .Min();
+        }
+
+        private static long Day20DistanceFromOrigin(ImmutableArray<int> v)
+        {
+            return v.Take(3).Select(Math.Abs).Sum();
+        }
+
+        private static ImmutableArray<int> Day20DoStep(ImmutableArray<int> lastState)
+        {
+            return new[]
+            {
+                lastState[0] + lastState[3] + lastState[6],
+                lastState[1] + lastState[4] + lastState[7],
+                lastState[2] + lastState[5] + lastState[8],
+                lastState[3] + lastState[6],
+                lastState[4] + lastState[7],
+                lastState[5] + lastState[8],
+                lastState[6],
+                lastState[7],
+                lastState[8]
+            }.ToImmutableArray();
         }
 
     }
