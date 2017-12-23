@@ -151,6 +151,13 @@ namespace AdventOfCode2017.CSharp
                 Console.WriteLine($"Part 1: {Day18Part1(input)}");
                 Console.WriteLine($"Part 2: {Day18Part2(input)}");
             }
+            else if (day == 19)
+            {
+                var input = Inputs.Day19;
+
+                Console.WriteLine($"Part 1: {Day19Part1(input)}");
+                Console.WriteLine($"Part 2: {Day19Part2(input)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -1246,5 +1253,88 @@ namespace AdventOfCode2017.CSharp
                     throw new InvalidOperationException($"Got invalid instruction: {instruction}");
             }
         }
+
+        private static string Day19Part1(string input)
+        {
+            var map = input
+                .SelectLines()
+                .Select(s => s.ToImmutableArray())
+                .ToImmutableArray();
+
+            var startingCol = map[0]
+                .TakeWhile(ch => ch == ' ')
+                .Count();
+
+            var knownChars = new[]
+            {
+                '-',
+                '|',
+                '+',
+                'x'
+            }.ToImmutableHashSet();
+
+            return new string(EnumerableExtensions
+                .TupleGenerate(
+                    0,
+                    startingCol,
+                    'd',
+                    (_row, _col, direction) => direction != 's',
+                    (row, col, direction) => Day19GetNextStep(row, col, direction, map))
+                .Select(t => map[t.Item1][t.Item2])
+                .Where(ch => !knownChars.Contains(ch))
+                .ToArray());
+        }
+
+        private static Tuple<int, int, char> Day19GetNextStep(int row, int col, char direction, ImmutableArray<ImmutableArray<char>> map)
+        {
+            var atPlus = map[row][col] == '+';
+            var upBlank = row == 0 || map[row - 1][col] == ' ';
+            var leftBlank = col == 0 || map[row][col - 1] == ' ';
+            var vertical = direction == 'u' || direction == 'd';
+
+            var nextDirection = !atPlus ? direction
+                : vertical ? (leftBlank ? 'r' : 'l')
+                : upBlank ? 'd' : 'u';
+
+            var nextRow = nextDirection == 'd' ? row + 1
+                : nextDirection == 'u' ? row - 1
+                : row;
+
+            var nextCol = nextDirection == 'r' ? col + 1
+                : nextDirection == 'l' ? col - 1
+                : col;
+
+            return Tuple.Create(nextRow, nextCol, map[nextRow][nextCol] == ' ' ? 's' : nextDirection);
+        }
+
+        private static int Day19Part2(string input)
+        {
+            var map = input
+                .SelectLines()
+                .Select(s => s.ToImmutableArray())
+                .ToImmutableArray();
+
+            var startingCol = map[0]
+                .TakeWhile(ch => ch == ' ')
+                .Count();
+
+            var knownChars = new[]
+            {
+                '-',
+                '|',
+                '+',
+                'x'
+            }.ToImmutableHashSet();
+
+            return EnumerableExtensions
+                .TupleGenerate(
+                    0,
+                    startingCol,
+                    'd',
+                    (_row, _col, direction) => direction != 's',
+                    (row, col, direction) => Day19GetNextStep(row, col, direction, map))
+                .Count();
+        }
+
     }
 }

@@ -95,7 +95,7 @@ namespace AdventOfCode2017.CSharp
         {
             return input
                 .Split("\n")
-                .Select(r => r.Trim())
+                .Select(r => r.Trim('\r'))
                 .Where(s => s.Length > 0);
         }
 
