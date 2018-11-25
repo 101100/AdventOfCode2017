@@ -166,6 +166,13 @@ namespace AdventOfCode2017.CSharp
                 Console.WriteLine($"Part 1: {Program.Day20Part1(input)}");
                 Console.WriteLine($"Part 2: {Program.Day20Part2(input)}");
             }
+            else if (day == 21)
+            {
+                var input = Inputs.Day21;
+
+                Console.WriteLine($"Part 1: {Program.Day21Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day21Part2(input)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -1427,6 +1434,225 @@ namespace AdventOfCode2017.CSharp
                 lastState[7],
                 lastState[8]
             }.ToImmutableArray();
+        }
+
+        private static int Day21Part1(string input)
+        {
+            return Program.Day21DrawArt(input, 5);
+        }
+
+        private static int Day21Part2(string input)
+        {
+            return Program.Day21DrawArt(input, 18);
+        }
+
+        private static int Day21DrawArt(string input, int iterations)
+        {
+            var twoEnhancements = input
+                .SelectLines()
+                .Take(6)
+                .SelectMany(s => Program.Day21GetEnhancement(s, 2))
+                .ToImmutableDictionary(t => t.Input, t => t.Enhancement);
+
+            var threeEnhancements = input
+                .SelectLines()
+                .Skip(6)
+                .SelectMany(s => Program.Day21GetEnhancement(s, 3))
+                .ToImmutableDictionary(t => t.Input, t => t.Enhancement);
+
+            var start = new[] { false, true, false, false, false, true, true, true, true };
+
+            var art = EnumerableExtensions
+                .Generate(
+                    start,
+                    _ => true,
+                    pattern => Program.Day21GetNextPattern(pattern, twoEnhancements, threeEnhancements))
+                .Skip(1)
+                .Take(iterations)
+                .Last();
+
+            return Program.Day21CountBits(art);
+        }
+
+        private static int Day21CountBits(bool[] art)
+        {
+            return art
+                .Count(bit => bit);
+        }
+
+        private static bool[] Day21GetNextPattern(bool[] pattern, IReadOnlyDictionary<int, int> twoEnhancements, IReadOnlyDictionary<int, int> threeEnhancements)
+        {
+            var size = (int) Math.Sqrt(pattern.Length);
+            if (size % 2 == 0)
+            {
+                var newSize = size / 2 * 3;
+
+                return pattern
+                    .Day21BreakApartPattern(size, 2)
+                    .Select(tinyPattern => twoEnhancements[tinyPattern])
+                    .Day21CombinePatterns(newSize, 3);
+            }
+            else
+            {
+                var newSize = size / 3 * 4;
+
+                return pattern
+                    .Day21BreakApartPattern(size, 3)
+                    .Select(tinyPattern => threeEnhancements[tinyPattern])
+                    .Day21CombinePatterns(newSize, 4);
+            }
+        }
+
+        private static IEnumerable<int> Day21BreakApartPattern(this bool[] pattern, int patternSize, int brokenSize)
+        {
+            var numberOfThings = patternSize / brokenSize;
+
+            return Enumerable
+                .Range(0, numberOfThings)
+                .SelectMany(row => Enumerable.Range(0, numberOfThings).Select(col => (Row: row, Column: col)))
+                .Select(subPatternLocation => pattern.Day21ExtractOne(patternSize, brokenSize, subPatternLocation.Row * brokenSize, subPatternLocation.Column * brokenSize));
+        }
+
+        private static int Day21ExtractOne(this bool[] pattern, int patternSize, int brokenSize, int patternRowStart, int patternColumnStart)
+        {
+            return Enumerable
+                .Range(0, brokenSize)
+                .SelectMany(r => Enumerable.Range(0, brokenSize).Select(c => (Row: r, Column: c)))
+                .Sum(subPatternPixel =>
+                {
+                    var patternBitLocation = (subPatternPixel.Row + patternRowStart) * patternSize
+                        + (subPatternPixel.Column + patternColumnStart);
+                    var subPatternBitLocation = brokenSize * brokenSize - 1
+                        - subPatternPixel.Row * brokenSize
+                        - subPatternPixel.Column;
+                    return (pattern[patternBitLocation] ? 1 : 0) << subPatternBitLocation;
+                });
+        }
+
+        private static bool[] Day21CombinePatterns(this IEnumerable<int> subPatterns, int newPatternSize, int brokenSize)
+        {
+            var numberOfThings = newPatternSize / brokenSize;
+            var subPatternsArray = subPatterns.ToImmutableArray();
+
+            var newPattern = new bool[newPatternSize * newPatternSize];
+            foreach (var row in Enumerable.Range(0, numberOfThings))
+            {
+                var subPatternRowStart = row * brokenSize;
+                foreach (var col in Enumerable.Range(0, numberOfThings))
+                {
+                    var subPatternColumnStart = col * brokenSize;
+                    var subPattern = subPatternsArray[row * numberOfThings + col];
+                    foreach (var subPatternRowPixel in Enumerable.Range(0, brokenSize))
+                    {
+                        foreach (var subPatternColumnPixel in Enumerable.Range(0, brokenSize))
+                        {
+                            var subPatternBitLocation = brokenSize * brokenSize - 1
+                                - (subPatternRowPixel * brokenSize)
+                                - subPatternColumnPixel;
+                            var patternBitLocation = (subPatternRowPixel + subPatternRowStart) * newPatternSize
+                                + (subPatternColumnPixel + subPatternColumnStart);
+                            newPattern[patternBitLocation] = ((subPattern >> subPatternBitLocation) & 0b1) == 0b1;
+                        }
+                    }
+                }
+            }
+
+            return newPattern;
+        }
+
+        private static IEnumerable<(int Input, int Enhancement)> Day21GetEnhancement(string enhancement, int size)
+        {
+            var parts = enhancement.Split(" => ");
+
+            return Program.Day21GetRotations(Program.Day21ToInt(parts[0]), size)
+                .Distinct()
+                .Select(l => (l, Program.Day21ToInt(parts[1])));
+        }
+
+        private static IEnumerable<int> Day21GetRotations(int start, int size)
+        {
+            if (size == 2)
+            {
+                var bits = new[]
+                {
+                    (start & 0b1000) >> 3,
+                    (start & 0b0100) >> 2,
+                    (start & 0b0010) >> 1,
+                    (start & 0b0001)
+                };
+
+                // no rotations or flips
+                yield return start; //yield return Program.Day21BitsToNum(bits, 0, 1, 2, 3);
+                // right 90 degrees
+                yield return Program.Day21BitsToNum(bits, 2, 0, 3, 1);
+                // right 90 degrees + flip vertically
+                yield return Program.Day21BitsToNum(bits, 3, 1, 2, 0);
+                // right 90 degrees + flip horizontally
+                yield return Program.Day21BitsToNum(bits, 0, 2, 1, 3);
+                // right 180 degrees
+                yield return Program.Day21BitsToNum(bits, 3, 2, 1, 0);
+                // right 180 degrees + flip vertically (skip R0+H)
+                // right 180 degrees + flip horizontally (skip R0+V)
+                // right 270 degrees
+                yield return Program.Day21BitsToNum(bits, 1, 3, 0, 2);
+                // right 270 degrees + flip vertically (skip R90+H)
+                // right 270 degrees + flip horizontally (skip R90+V)
+                // flip vertically
+                yield return Program.Day21BitsToNum(bits, 2, 3, 0, 1);
+                // flip horizontally
+                yield return Program.Day21BitsToNum(bits, 1, 0, 3, 2);
+            }
+            else if (size == 3)
+            {
+                var bits = new[]
+                {
+                    (start & 0b100000000) >> 8,
+                    (start & 0b010000000) >> 7,
+                    (start & 0b001000000) >> 6,
+                    (start & 0b000100000) >> 5,
+                    (start & 0b000010000) >> 4,
+                    (start & 0b000001000) >> 3,
+                    (start & 0b000000100) >> 2,
+                    (start & 0b000000010) >> 1,
+                    (start & 0b000000001)
+                };
+
+                // no rotations or flips
+                yield return start; //yield return Program.Day21BitsToNum(bits, 0, 1, 2, 3, 4, 5, 6, 7, 8);
+                // right 90 degrees
+                yield return Program.Day21BitsToNum(bits, 6, 3, 0, 7, 4, 1, 8, 5, 2);
+                // right 90 degrees + flip vertically
+                yield return Program.Day21BitsToNum(bits, 8, 5, 2, 7, 4, 1, 6, 3, 0);
+                // right 90 degrees + flip horizontally
+                yield return Program.Day21BitsToNum(bits, 0, 3, 6, 1, 4, 7, 2, 5, 8);
+                // right 180 degrees
+                yield return Program.Day21BitsToNum(bits, 8, 7, 6, 5, 4, 3, 2, 1, 0);
+                // right 180 degrees + flip vertically (skip R0+H)
+                // right 180 degrees + flip horizontally (skip R0+V)
+                // right 270 degrees
+                yield return Program.Day21BitsToNum(bits, 2, 5, 8, 1, 4, 7, 0, 3, 6);
+                // right 270 degrees + flip vertically (skip R90+H)
+                // right 270 degrees + flip horizontally (skip R90+V)
+                // flip vertically
+                yield return Program.Day21BitsToNum(bits, 6, 7, 8, 3, 4, 5, 0, 1, 2);
+                // flip horizontally
+                yield return Program.Day21BitsToNum(bits, 2, 1, 0, 5, 4, 3, 8, 7, 6);
+            }
+        }
+
+        private static int Day21BitsToNum(int[] bits, params int[] selectedBits)
+        {
+            return selectedBits
+                .Aggregate(0, (acc, selectedBit) => (acc << 1) | bits[selectedBit]);
+        }
+
+        private static int Day21ToInt(string part)
+        {
+            return part
+                .Where(ch => ch == '.' || ch == '#')
+                .Select(ch => ch == '#' ? 1 : 0)
+                .Reverse()
+                .Aggregate(0, (acc, bit) => acc * 2 + bit);
         }
 
     }
