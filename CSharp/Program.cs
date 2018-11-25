@@ -15,7 +15,7 @@ namespace AdventOfCode2017.CSharp
         {
             var dayString = args.Length >= 1
                 ? args[0]
-                : ReadDay();
+                : Program.ReadDay();
 
             if (!byte.TryParse(dayString, out var day))
             {
@@ -27,144 +27,144 @@ namespace AdventOfCode2017.CSharp
             {
                 var input = Inputs.Day1;
 
-                Console.WriteLine($"Part 1 (C#): {Day1Part1(input)}");
+                Console.WriteLine($"Part 1 (C#): {Program.Day1Part1(input)}");
                 Console.WriteLine($"Part 1 (F#): {Day1.part1(input)}");
-                Console.WriteLine($"Part 2 (C#): {Day1Part2(input)}");
+                Console.WriteLine($"Part 2 (C#): {Program.Day1Part2(input)}");
                 Console.WriteLine($"Part 2 (F#): {Day1.part2(input)}");
             }
             else if (day == 2)
             {
                 var input = Inputs.Day2;
 
-                Console.WriteLine($"Part 1: {Day2Part1(input)}");
-                Console.WriteLine($"Part 2: {Day2Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day2Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day2Part2(input)}");
             }
             else if (day == 3)
             {
-                var input = GetIntInput(args) ?? Inputs.Day3;
+                var input = Program.GetIntInput(args) ?? Inputs.Day3;
 
-                Console.WriteLine($"Part 1: {Day3Part1(input)}");
-                Console.WriteLine($"Part 2: {Day3Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day3Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day3Part2(input)}");
             }
             else if (day == 4)
             {
                 var input = Inputs.Day4;
 
-                Console.WriteLine($"Part 1: {Day4Part1(input)}");
-                Console.WriteLine($"Part 2: {Day4Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day4Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day4Part2(input)}");
             }
             else if (day == 5)
             {
                 var input = Inputs.Day5;
 
-                Console.WriteLine($"Part 1: {Day5Part1(input)}");
-                Console.WriteLine($"Part 2: {Day5Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day5Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day5Part2(input)}");
             }
             else if (day == 6)
             {
                 var input = Inputs.Day6;
 
-                Console.WriteLine($"Part 1: {Day6Part1(input)}");
-                Console.WriteLine($"Part 2: {Day6Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day6Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day6Part2(input)}");
             }
             else if (day == 7)
             {
                 var input = Inputs.Day7;
 
-                Console.WriteLine($"Part 1: {Day7Part1(input)}");
-                Console.WriteLine($"Part 2: {Day7Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day7Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day7Part2(input)}");
             }
             else if (day == 8)
             {
                 var input = Inputs.Day8;
 
-                Console.WriteLine($"Part 1: {Day8Part1(input)}");
-                Console.WriteLine($"Part 2: {Day8Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day8Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day8Part2(input)}");
             }
             else if (day == 9)
             {
                 var input = Inputs.Day9;
 
-                Console.WriteLine($"Part 1: {Day9Part1(input)}");
-                Console.WriteLine($"Part 2: {Day9Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day9Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day9Part2(input)}");
             }
             else if (day == 10)
             {
                 var input = Inputs.Day10;
 
-                Console.WriteLine($"Part 1: {Day10Part1(input)}");
-                Console.WriteLine($"Part 2: {Day10Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day10Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day10Part2(input)}");
             }
             else if (day == 11)
             {
                 var input = Inputs.Day11;
 
-                Console.WriteLine($"Part 1: {Day11Part1(input)}");
-                Console.WriteLine($"Part 2: {Day11Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day11Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day11Part2(input)}");
             }
             else if (day == 12)
             {
                 var input = Inputs.Day12;
 
-                Console.WriteLine($"Part 1: {Day12Part1(input)}");
-                Console.WriteLine($"Part 2: {Day12Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day12Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day12Part2(input)}");
             }
             else if (day == 13)
             {
                 var input = Inputs.Day13;
 
-                Console.WriteLine($"Part 1: {Day13Part1(input)}");
-                Console.WriteLine($"Part 2: {Day13Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day13Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day13Part2(input)}");
             }
             else if (day == 14)
             {
                 var input = Inputs.Day14;
 
-                Console.WriteLine($"Part 1: {Day14Part1(input)}");
-                Console.WriteLine($"Part 2: {Day14Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day14Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day14Part2(input)}");
             }
             else if (day == 15)
             {
                 var inputA = Inputs.Day15A;
                 var inputB = Inputs.Day15B;
 
-                Console.WriteLine($"Part 1: {Day15Part1(inputA, inputB)}");
-                Console.WriteLine($"Part 2: {Day15Part2(inputA, inputB)}");
+                Console.WriteLine($"Part 1: {Program.Day15Part1(inputA, inputB)}");
+                Console.WriteLine($"Part 2: {Program.Day15Part2(inputA, inputB)}");
             }
             else if (day == 16)
             {
                 var input = Inputs.Day16;
 
-                Console.WriteLine($"Part 1: {Day16Part1(input)}");
-                Console.WriteLine($"Part 2: {Day16Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day16Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day16Part2(input)}");
             }
             else if (day == 17)
             {
-                var input = GetIntInput(args) ?? Inputs.Day17;
+                var input = Program.GetIntInput(args) ?? Inputs.Day17;
 
-                Console.WriteLine($"Part 1: {Day17Part1(input)}");
-                Console.WriteLine($"Part 2: {Day17Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day17Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day17Part2(input)}");
             }
             else if (day == 18)
             {
                 var input = Inputs.Day18;
 
-                Console.WriteLine($"Part 1: {Day18Part1(input)}");
-                Console.WriteLine($"Part 2: {Day18Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day18Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day18Part2(input)}");
             }
             else if (day == 19)
             {
                 var input = Inputs.Day19;
 
-                Console.WriteLine($"Part 1: {Day19Part1(input)}");
-                Console.WriteLine($"Part 2: {Day19Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day19Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day19Part2(input)}");
             }
             else if (day == 20)
             {
                 var input = Inputs.Day20;
 
-                Console.WriteLine($"Part 1: {Day20Part1(input)}");
-                Console.WriteLine($"Part 2: {Day20Part2(input)}");
+                Console.WriteLine($"Part 1: {Program.Day20Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day20Part2(input)}");
             }
             else
             {
@@ -253,9 +253,9 @@ namespace AdventOfCode2017.CSharp
             return EnumerableExtensions
                 .Generate(new [] { 1 }.ToImmutableList(), _ => true, last =>
                 {
-                    var nextPoint = Day3ToPoint(last.Count + 1);
-                    var nextValue = Day3GetNeighbours(nextPoint)
-                        .Select(Day3FromPoint)
+                    var nextPoint = Program.Day3ToPoint(last.Count + 1);
+                    var nextValue = Program.Day3GetNeighbours(nextPoint)
+                        .Select(Program.Day3FromPoint)
                         .Select(v => last.Count > v - 1 ? last[v - 1] : 0)
                         .Sum();
 
@@ -412,7 +412,7 @@ namespace AdventOfCode2017.CSharp
             return EnumerableExtensions
                 .Generate(Tuple.Create(ImmutableHashSet<string>.Empty, startingState),
                     state => !state.Item1.Contains(string.Join(":", state.Item2)),
-                    lastState => Tuple.Create(lastState.Item1.Add(string.Join(":", lastState.Item2)), Day6Redistribute(lastState.Item2)))
+                    lastState => Tuple.Create(lastState.Item1.Add(string.Join(":", lastState.Item2)), Program.Day6Redistribute(lastState.Item2)))
                 .Count();
         }
 
@@ -426,7 +426,7 @@ namespace AdventOfCode2017.CSharp
             return EnumerableExtensions
                 .Generate(Tuple.Create(ImmutableDictionary<string, int>.Empty, startingState),
                     state => state.Item1.All(p => p.Value <= 1),
-                    lastState => Tuple.Create(lastState.Item1.SetItem(string.Join(":", lastState.Item2), lastState.Item1.GetValueOrDefault(string.Join(":", lastState.Item2), 0) + 1), Day6Redistribute(lastState.Item2)))
+                    lastState => Tuple.Create(lastState.Item1.SetItem(string.Join(":", lastState.Item2), lastState.Item1.GetValueOrDefault(string.Join(":", lastState.Item2), 0) + 1), Program.Day6Redistribute(lastState.Item2)))
                 .Select((t, index) => Tuple.Create(string.Join(":", t.Item2), index))
                 .Aggregate(ImmutableDictionary<string, ImmutableList<int>>.Empty,
                     (acc, tuple) => acc.UpdateValue( tuple.Item1, ImmutableList<int>.Empty, list => list.Add(tuple.Item2)))
@@ -504,7 +504,7 @@ namespace AdventOfCode2017.CSharp
 
             var root = rootName.Day7BuildTree(inputs);
 
-            return Day7FindUnbalancedNodesCorrectWeight(root);
+            return Program.Day7FindUnbalancedNodesCorrectWeight(root);
         }
 
         private class TreeNode
@@ -540,7 +540,7 @@ namespace AdventOfCode2017.CSharp
         {
             foreach (var child in root.Children)
             {
-                var result = Day7FindUnbalancedNodesCorrectWeight(child);
+                var result = Program.Day7FindUnbalancedNodesCorrectWeight(child);
                 if (result > 0)
                 {
                     return result;
@@ -581,7 +581,7 @@ namespace AdventOfCode2017.CSharp
                 .Aggregate(ImmutableDictionary<string, int>.Empty,
                     (registers, parsed) =>
                     {
-                        return Day8CheckCondition(registers.GetValueOrDefault(parsed.Item3, 0), parsed.Item4, parsed.Item5)
+                        return Program.Day8CheckCondition(registers.GetValueOrDefault(parsed.Item3, 0), parsed.Item4, parsed.Item5)
                             ? registers.UpdateValue(parsed.Item1, 0, val => val + parsed.Item2)
                             : registers;
                     })
@@ -603,7 +603,7 @@ namespace AdventOfCode2017.CSharp
                 .Scan(ImmutableDictionary<string, int>.Empty,
                     (registers, parsed) =>
                     {
-                        return Day8CheckCondition(registers.GetValueOrDefault(parsed.Item3, 0), parsed.Item4, parsed.Item5)
+                        return Program.Day8CheckCondition(registers.GetValueOrDefault(parsed.Item3, 0), parsed.Item4, parsed.Item5)
                             ? registers.UpdateValue(parsed.Item1, 0, val => val + parsed.Item2)
                             : registers;
                     })
@@ -625,14 +625,14 @@ namespace AdventOfCode2017.CSharp
 
         private static int Day9Part1(string input)
         {
-            return Day9CreateGroupsStream(input)
+            return Program.Day9CreateGroupsStream(input)
                 .Where(t => t.Item2)
                 .Sum(t => t.Item5);
         }
 
         private static int Day9Part2(string input)
         {
-            return Day9CreateGroupsStream(input)
+            return Program.Day9CreateGroupsStream(input)
                 .Count(t => t.Item1 == 0 && t.Item4 && !t.Item3);
         }
 
@@ -664,7 +664,7 @@ namespace AdventOfCode2017.CSharp
                 .Select((length, skipCount) => Tuple.Create(length, skipCount))
                 .TupleAggregate(startingState, 0,
                     (state, currentPosition, length, skipSize) => Tuple.Create(
-                        Day10Twist(state, currentPosition, length),
+                        Program.Day10Twist(state, currentPosition, length),
                         (currentPosition + length + skipSize) % state.Length));
 
             return finalState.Item1
@@ -690,7 +690,7 @@ namespace AdventOfCode2017.CSharp
 
         private static string Day10Part2(string input)
         {
-            return string.Join("", Day10KnotHash(input)
+            return string.Join("", Program.Day10KnotHash(input)
                 .Select(b => string.Format("{0:x2}", b)));
         }
 
@@ -712,12 +712,12 @@ namespace AdventOfCode2017.CSharp
                 .Range(0, 256)
                 .ToImmutableArray();
 
-            var finalState = Day10ToLengths(input)
+            var finalState = Program.Day10ToLengths(input)
                 .Repeat(64)
                 .Select((length, skipCount) => Tuple.Create(length, skipCount))
                 .TupleAggregate(startingState, 0,
                     (state, currentPosition, length, skipSize) => Tuple.Create(
-                        Day10Twist(state, currentPosition, length),
+                        Program.Day10Twist(state, currentPosition, length),
                         (currentPosition + length + skipSize) % state.Length));
 
             return finalState.Item1
@@ -730,11 +730,11 @@ namespace AdventOfCode2017.CSharp
             var finalPosition = input
                 .Split(",")
                 .Select(s => s.Trim())
-                .Select(Day11DirectionToLocationChange)
+                .Select(Program.Day11DirectionToLocationChange)
                 .TupleAggregate(0d, 0d,
                     (cx, cy, dx, dy) => Tuple.Create(cx + dx, cy + dy));
 
-            return Day11HexDistance(finalPosition.Item1, finalPosition.Item2);
+            return Program.Day11HexDistance(finalPosition.Item1, finalPosition.Item2);
         }
 
         private static Tuple<double, double> Day11DirectionToLocationChange(string s)
@@ -769,10 +769,10 @@ namespace AdventOfCode2017.CSharp
             return input
                 .Split(",")
                 .Select(s => s.Trim())
-                .Select(Day11DirectionToLocationChange)
+                .Select(Program.Day11DirectionToLocationChange)
                 .TupleScan(0d, 0d,
                     (cx, cy, dx, dy) => Tuple.Create(cx + dx, cy + dy))
-                .TupleSelect(Day11HexDistance)
+                .TupleSelect(Program.Day11HexDistance)
                 .Max();
         }
 
@@ -791,7 +791,7 @@ namespace AdventOfCode2017.CSharp
                             .ToImmutableHashSet()))
                 .ToImmutableDictionary(t => t.Item1, t => t.Item2);
 
-            var connected = Day12GetConnected(0, inputs);
+            var connected = Program.Day12GetConnected(0, inputs);
 
             return connected.Count;
         }
@@ -831,7 +831,7 @@ namespace AdventOfCode2017.CSharp
             return EnumerableExtensions.Generate(
                     unconnectedNodes,
                     remainingNodes => remainingNodes.Count > 0,
-                    remainingNodes => remainingNodes.Except(Day12GetConnected(remainingNodes.First(), inputs)))
+                    remainingNodes => remainingNodes.Except(Program.Day12GetConnected(remainingNodes.First(), inputs)))
                 .Count();
         }
 
@@ -854,7 +854,7 @@ namespace AdventOfCode2017.CSharp
                     t.Item2 + (t.Item3.GetValueOrDefault(t.Item1, Tuple.Create(-1, false)).Item1 == 0
                         ? t.Item1 * inputs[t.Item1]
                         : 0),
-                    Day13NextStep(t.Item3, inputs)))
+                    Program.Day13NextStep(t.Item3, inputs)))
                 .Last()
                 .Item2;
         }
@@ -880,7 +880,7 @@ namespace AdventOfCode2017.CSharp
 
             return Enumerable
                 .Range(0, 10000000)
-                .First(startTime => Day13Caught(startTime, inputs));
+                .First(startTime => Program.Day13Caught(startTime, inputs));
         }
 
         private static bool Day13Caught(int startTime, ImmutableDictionary<int, int> inputs)
@@ -891,13 +891,13 @@ namespace AdventOfCode2017.CSharp
 
         private static string Day14KnotHash(string input)
         {
-            return string.Join("", Day10KnotHash(input)
+            return string.Join("", Program.Day10KnotHash(input)
                 .Select(b => Convert.ToString(b, 2).PadLeft(8, '0')));
         }
 
         private static int Day14Part1(string input)
         {
-            return Day14Parse(input)
+            return Program.Day14Parse(input)
                 .Sum(hash => hash.Count(c => c == '1'));
         }
 
@@ -906,18 +906,18 @@ namespace AdventOfCode2017.CSharp
             return Enumerable
                 .Range(0, 128)
                 .Select(i => $"{input}-{i}")
-                .Select(Day14KnotHash);
+                .Select(Program.Day14KnotHash);
         }
 
         private static int Day14Part2(string input)
         {
-            var usedArray = Day14Parse(input)
+            var usedArray = Program.Day14Parse(input)
                 .SelectMany(hash => hash.Select(c => c == '1'))
                 .ToImmutableArray();
 
             var connections = Enumerable.Range(0, 128 * 128)
                 .Where(i => usedArray[i])
-                .ToImmutableDictionary(i => i, i => Day14GetNeighbours(i, usedArray).ToImmutableHashSet());
+                .ToImmutableDictionary(i => i, i => Program.Day14GetNeighbours(i, usedArray).ToImmutableHashSet());
 
             var unconnectedNodes = connections
                 .Select(p => p.Key)
@@ -928,7 +928,7 @@ namespace AdventOfCode2017.CSharp
                     t => t.Item1.Count > 0,
                     t =>
                     {
-                        var thing = Day12GetConnected(t.Item1.First(), connections);
+                        var thing = Program.Day12GetConnected(t.Item1.First(), connections);
                         return Tuple.Create(t.Item1.Except(thing), thing);
                     })
                 .Count();
@@ -967,8 +967,8 @@ namespace AdventOfCode2017.CSharp
 
         private static int Day15Part2(int aStart, int bStart)
         {
-            return Program.Day15Generator(aStart, 16807).Where(Day15Multiple(4))
-                .Zip(Program.Day15Generator(bStart, 48271).Where(Day15Multiple(8)), Tuple.Create)
+            return Program.Day15Generator(aStart, 16807).Where(Program.Day15Multiple(4))
+                .Zip(Program.Day15Generator(bStart, 48271).Where(Program.Day15Multiple(8)), Tuple.Create)
                 .Take(5000000)
                 .Count(t => (t.Item1 & 0xFFFF) == (t.Item2 & 0xFFFF));
         }
@@ -999,7 +999,7 @@ namespace AdventOfCode2017.CSharp
                     return Tuple.Create(a, parts[0], parts.Length > 1 ? parts[1] : string.Empty);
                 });
 
-            return Day16OneDance(inputs, "abcdefghijklmnop");
+            return Program.Day16OneDance(inputs, "abcdefghijklmnop");
         }
 
         private static string Day16OneDance(IEnumerable<Tuple<char, string, string>> inputs, string start)
@@ -1052,7 +1052,7 @@ namespace AdventOfCode2017.CSharp
             var period = EnumerableExtensions.Generate(
                     "abcdefghijklmnop",
                     _ => true,
-                    last => Day16OneDance(inputs, last))
+                    last => Program.Day16OneDance(inputs, last))
                 .Select((s, i) => Tuple.Create(s, i))
                 .Skip(1)
                 .TakeWhile(s => !string.Equals(s.Item1, "abcdefghijklmnop"))
@@ -1060,12 +1060,12 @@ namespace AdventOfCode2017.CSharp
 
             var extraDances = 1000000000L % 36;
 
-            return Day16OneDance(inputs.Repeat((int) extraDances), "abcdefghijklmnop");
+            return Program.Day16OneDance(inputs.Repeat((int) extraDances), "abcdefghijklmnop");
         }
 
         private static int Day17Part1(int input)
         {
-            var finalState = Day17Spinlock1(steps: input, lastValue: 2017)
+            var finalState = Program.Day17Spinlock1(steps: input, lastValue: 2017)
                 .Last();
 
             return finalState.Item2[finalState.Item1 + 1];
@@ -1084,7 +1084,7 @@ namespace AdventOfCode2017.CSharp
 
         private static int Day17Part2(int input)
         {
-            return Day17Spinlock1BeforeZero(steps: input, repetitions: 50000000)
+            return Program.Day17Spinlock1BeforeZero(steps: input, repetitions: 50000000)
                 .Last()
                 .Item2;
         }
@@ -1112,7 +1112,7 @@ namespace AdventOfCode2017.CSharp
                         parts.Length > 2 ? parts[2] : string.Empty))
                 .ToImmutableArray();
 
-            return Day18GetRecoveredNote(instructions, -1, 0, ImmutableDictionary<char, long>.Empty);
+            return Program.Day18GetRecoveredNote(instructions, -1, 0, ImmutableDictionary<char, long>.Empty);
         }
 
         private static long Day18GetRecoveredNote(
@@ -1127,43 +1127,43 @@ namespace AdventOfCode2017.CSharp
             {
                 case "snd":
                 {
-                    var valueOfX = Day18ValueOfX(registers, instruction);
-                    return Day18GetRecoveredNote(instructions, valueOfX, instructionPointer + 1, registers);
+                    var valueOfX = Program.Day18ValueOfX(registers, instruction);
+                    return Program.Day18GetRecoveredNote(instructions, valueOfX, instructionPointer + 1, registers);
                 }
                 case "set":
                 {
-                    var valueOfY = Day18ValueOfY(registers, instruction);
-                    return Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, _ => valueOfY));
+                    var valueOfY = Program.Day18ValueOfY(registers, instruction);
+                    return Program.Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, _ => valueOfY));
                 }
                 case "add":
                 {
-                    var valueOfY = Day18ValueOfY(registers, instruction);
-                    return Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x + valueOfY));
+                    var valueOfY = Program.Day18ValueOfY(registers, instruction);
+                    return Program.Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x + valueOfY));
                 }
                 case "mul":
                 {
-                    var valueOfY = Day18ValueOfY(registers, instruction);
-                    return Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x * valueOfY));
+                    var valueOfY = Program.Day18ValueOfY(registers, instruction);
+                    return Program.Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x * valueOfY));
                 }
                 case "mod":
                 {
-                    var valueOfY = Day18ValueOfY(registers, instruction);
-                    return Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x % valueOfY));
+                    var valueOfY = Program.Day18ValueOfY(registers, instruction);
+                    return Program.Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x % valueOfY));
                 }
                 case "rcv":
                 {
-                    var valueOfX = Day18ValueOfX(registers, instruction);
+                    var valueOfX = Program.Day18ValueOfX(registers, instruction);
                     return valueOfX != 0
                         ? lastNote
-                        : Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers);
+                        : Program.Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers);
                 }
                 case "jgz":
                 {
-                    var valueOfX = Day18ValueOfX(registers, instruction);
-                    var valueOfY = Day18ValueOfY(registers, instruction);
+                    var valueOfX = Program.Day18ValueOfX(registers, instruction);
+                    var valueOfY = Program.Day18ValueOfY(registers, instruction);
                     return valueOfX > 0
-                        ? Day18GetRecoveredNote(instructions, lastNote, (int) (instructionPointer + valueOfY), registers)
-                        : Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers);
+                        ? Program.Day18GetRecoveredNote(instructions, lastNote, (int) (instructionPointer + valueOfY), registers)
+                        : Program.Day18GetRecoveredNote(instructions, lastNote, instructionPointer + 1, registers);
                 }
                 default:
                     throw new InvalidOperationException($"Got invalid instruction: {instruction}");
@@ -1202,8 +1202,8 @@ namespace AdventOfCode2017.CSharp
                 0,
                 (program0, program1, turn) => program0.Item1.Count + program1.Item1.Count > 0 || program0.Item2 == 0,
                 (program0, program1, turn) => turn == 0
-                    ? Tuple.Create(Day18RunOnce(instructions, program1.Item1, ImmutableList<long>.Empty, program0.Item2, program0.Item3), program1, 1)
-                    : Tuple.Create(program0, Day18RunOnce(instructions, program0.Item1, ImmutableList<long>.Empty, program1.Item2, program1.Item3), 0))
+                    ? Tuple.Create(Program.Day18RunOnce(instructions, program1.Item1, ImmutableList<long>.Empty, program0.Item2, program0.Item3), program1, 1)
+                    : Tuple.Create(program0, Program.Day18RunOnce(instructions, program0.Item1, ImmutableList<long>.Empty, program1.Item2, program1.Item3), 0))
                 .Sum(state => state.Item2.Item1.Count) / 2;
         }
 
@@ -1220,42 +1220,42 @@ namespace AdventOfCode2017.CSharp
             {
                 case "snd":
                 {
-                    var valueOfX = Day18ValueOfX(registers, instruction);
-                    return Day18RunOnce(instructions, receiveQueue, sendQueue.Add(valueOfX), instructionPointer + 1, registers);
+                    var valueOfX = Program.Day18ValueOfX(registers, instruction);
+                    return Program.Day18RunOnce(instructions, receiveQueue, sendQueue.Add(valueOfX), instructionPointer + 1, registers);
                 }
                 case "set":
                 {
-                    var valueOfY = Day18ValueOfY(registers, instruction);
-                    return Day18RunOnce(instructions, receiveQueue, sendQueue, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, _ => valueOfY));
+                    var valueOfY = Program.Day18ValueOfY(registers, instruction);
+                    return Program.Day18RunOnce(instructions, receiveQueue, sendQueue, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, _ => valueOfY));
                 }
                 case "add":
                 {
-                    var valueOfY = Day18ValueOfY(registers, instruction);
-                    return Day18RunOnce(instructions, receiveQueue, sendQueue, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x + valueOfY));
+                    var valueOfY = Program.Day18ValueOfY(registers, instruction);
+                    return Program.Day18RunOnce(instructions, receiveQueue, sendQueue, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x + valueOfY));
                 }
                 case "mul":
                 {
-                    var valueOfY = Day18ValueOfY(registers, instruction);
-                    return Day18RunOnce(instructions, receiveQueue, sendQueue, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x * valueOfY));
+                    var valueOfY = Program.Day18ValueOfY(registers, instruction);
+                    return Program.Day18RunOnce(instructions, receiveQueue, sendQueue, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x * valueOfY));
                 }
                 case "mod":
                 {
-                    var valueOfY = Day18ValueOfY(registers, instruction);
-                    return Day18RunOnce(instructions, receiveQueue, sendQueue, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x % valueOfY));
+                    var valueOfY = Program.Day18ValueOfY(registers, instruction);
+                    return Program.Day18RunOnce(instructions, receiveQueue, sendQueue, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, x => x % valueOfY));
                 }
                 case "rcv":
                 {
                     return receiveQueue.Count != 0
-                        ? Day18RunOnce(instructions, receiveQueue.RemoveAt(0), sendQueue, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, _ => receiveQueue[0]))
+                        ? Program.Day18RunOnce(instructions, receiveQueue.RemoveAt(0), sendQueue, instructionPointer + 1, registers.UpdateValue(instruction.Item2[0], 0, _ => receiveQueue[0]))
                         : Tuple.Create(sendQueue, instructionPointer, registers);
                 }
                 case "jgz":
                 {
-                    var valueOfX = Day18ValueOfX(registers, instruction);
-                    var valueOfY = Day18ValueOfY(registers, instruction);
+                    var valueOfX = Program.Day18ValueOfX(registers, instruction);
+                    var valueOfY = Program.Day18ValueOfY(registers, instruction);
                     return valueOfX > 0
-                        ? Day18RunOnce(instructions, receiveQueue, sendQueue, (int) (instructionPointer + valueOfY), registers)
-                        : Day18RunOnce(instructions, receiveQueue, sendQueue, instructionPointer + 1, registers);
+                        ? Program.Day18RunOnce(instructions, receiveQueue, sendQueue, (int) (instructionPointer + valueOfY), registers)
+                        : Program.Day18RunOnce(instructions, receiveQueue, sendQueue, instructionPointer + 1, registers);
                 }
                 default:
                     throw new InvalidOperationException($"Got invalid instruction: {instruction}");
@@ -1287,7 +1287,7 @@ namespace AdventOfCode2017.CSharp
                     startingCol,
                     'd',
                     (_row, _col, direction) => direction != 's',
-                    (row, col, direction) => Day19GetNextStep(row, col, direction, map))
+                    (row, col, direction) => Program.Day19GetNextStep(row, col, direction, map))
                 .Select(t => map[t.Item1][t.Item2])
                 .Where(ch => !knownChars.Contains(ch))
                 .ToArray());
@@ -1340,7 +1340,7 @@ namespace AdventOfCode2017.CSharp
                     startingCol,
                     'd',
                     (_row, _col, direction) => direction != 's',
-                    (row, col, direction) => Day19GetNextStep(row, col, direction, map))
+                    (row, col, direction) => Program.Day19GetNextStep(row, col, direction, map))
                 .Count();
         }
 
@@ -1380,12 +1380,12 @@ namespace AdventOfCode2017.CSharp
                     .ToImmutableArray())
                 .ToImmutableArray();
 
-            var slowest = Day20GetSlowest(vectors);
+            var slowest = Program.Day20GetSlowest(vectors);
 
             var states = EnumerableExtensions.Generate(
                 vectors,
-                v => Day20GetClosest(v) != Day20DistanceFromOrigin(v[slowest]),
-                v => v.Select(Day20DoStep).ToImmutableArray());
+                v => Program.Day20GetClosest(v) != Program.Day20DistanceFromOrigin(v[slowest]),
+                v => v.Select(Program.Day20DoStep).ToImmutableArray());
 
             return states
                 .Scan(
