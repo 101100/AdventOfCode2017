@@ -140,6 +140,26 @@ namespace AdventOfCode2017.CSharp
             }
         }
 
+        public static IEnumerable<(T1, T2, T3, T4)> TupleGenerate<T1, T2, T3, T4>(T1 seed1, T2 seed2, T3 seed3, T4 seed4, Func<T1, T2, T3, T4, (T1, T2, T3, T4)> iterate)
+        {
+            var next = (seed1, seed2, seed3, seed4);
+            while (true)
+            {
+                yield return next;
+                next = iterate(next.Item1, next.Item2, next.Item3, next.Item4);
+            }
+        }
+
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6)> TupleGenerate<T1, T2, T3, T4, T5, T6>(T1 seed1, T2 seed2, T3 seed3, T4 seed4, T5 seed5, T6 seed6, Func<T1, T2, T3, T4, T5, T6, (T1, T2, T3, T4, T5, T6)> iterate)
+        {
+            var next = (seed1, seed2, seed3, seed4, seed5, seed6);
+            while (true)
+            {
+                yield return next;
+                next = iterate(next.Item1, next.Item2, next.Item3, next.Item4, next.Item5, next.Item6);
+            }
+        }
+
         public static IEnumerable<Tuple<TState1, TState2>> TupleScan<TInput1, TInput2, TState1, TState2>(
             this IEnumerable<Tuple<TInput1, TInput2>> input,
             TState1 seed1,

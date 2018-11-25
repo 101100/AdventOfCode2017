@@ -173,6 +173,13 @@ namespace AdventOfCode2017.CSharp
                 Console.WriteLine($"Part 1: {Program.Day21Part1(input)}");
                 Console.WriteLine($"Part 2: {Program.Day21Part2(input)}");
             }
+            else if (day == 22)
+            {
+                var input = Inputs.Day22;
+
+                Console.WriteLine($"Part 1: {Program.Day22Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day22Part2(input)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -1653,6 +1660,122 @@ namespace AdventOfCode2017.CSharp
                 .Select(ch => ch == '#' ? 1 : 0)
                 .Reverse()
                 .Aggregate(0, (acc, bit) => acc * 2 + bit);
+        }
+
+        private static int Day22Part1(string input)
+        {
+            var map = input
+                .SelectLines()
+                .Select(s => s.ToImmutableArray())
+                .ToImmutableArray();
+
+            var yMiddle = (map.Length - 1) / 2;
+            var xMiddle = (map[0].Length - 1) / 2;
+
+            var startingInfections = map
+                .SelectMany((mapRow, row) =>
+                {
+                    return mapRow.Select((location, col) => (Infected: location == '#', Row: row - yMiddle, Column: col - xMiddle));
+                })
+                .Where(t => t.Infected)
+                .Select(t => (t.Row, t.Column))
+                .ToImmutableHashSet();
+
+            return EnumerableExtensions
+                .TupleGenerate(
+                    startingInfections,
+                    (Row: 0, Column: 0),
+                    'u',
+                    false,
+                    Program.Day22DoOneBurst)
+                .Take(1 + 10000)
+                .Count(t => t.Item4);
+        }
+
+        private static (ImmutableHashSet<(int, int)>, (int Row, int Column), char, bool) Day22DoOneBurst(ImmutableHashSet<(int, int)> infectedLocations, (int Row, int Column) location, char direction, bool causedInfection)
+        {
+            var locationInfected = infectedLocations.Contains(location);
+            var nextDirection = locationInfected
+                ? (direction == 'u' ? 'r' : direction == 'r' ? 'd' : direction == 'd' ? 'l' : 'u')
+                : (direction == 'u' ? 'l' : direction == 'l' ? 'd' : direction == 'd' ? 'r' : 'u');
+            var nextInfectionLocations = locationInfected
+                ? infectedLocations.Remove(location)
+                : infectedLocations.Add(location);
+            var nextRow = nextDirection == 'd' ? location.Row + 1
+                : nextDirection == 'u' ? location.Row - 1
+                : location.Row;
+            var nextCol = nextDirection == 'r' ? location.Column + 1
+                : nextDirection == 'l' ? location.Column - 1
+                : location.Column;
+
+            return (nextInfectionLocations, (nextRow, nextCol), nextDirection, !locationInfected);
+        }
+
+        private static int Day22Part2(string input)
+        {
+            var map = input
+                .SelectLines()
+                .Select(s => s.ToImmutableArray())
+                .ToImmutableArray();
+
+            var yMiddle = (map.Length - 1) / 2;
+            var xMiddle = (map[0].Length - 1) / 2;
+
+            var startingInfections = map
+                .SelectMany((mapRow, row) =>
+                {
+                    return mapRow.Select((location, col) => (Infected: location == '#', Row: row - yMiddle, Column: col - xMiddle));
+                })
+                .Where(t => t.Infected)
+                .Select(t => (t.Row, t.Column))
+                .ToImmutableHashSet();
+
+            return EnumerableExtensions
+                .TupleGenerate(
+                    startingInfections,
+                    ImmutableHashSet<(int, int)>.Empty,
+                    ImmutableHashSet<(int, int)>.Empty,
+                    (Row: 0, Column: 0),
+                    'u',
+                    false,
+                    Program.Day22DoOneBurst2)
+                .Take(1 + 10000000)
+                .Count(t => t.Item6);
+        }
+
+        private static (ImmutableHashSet<(int, int)>, ImmutableHashSet<(int, int)>, ImmutableHashSet<(int, int)>, (int Row, int Column), char, bool) Day22DoOneBurst2(
+            ImmutableHashSet<(int, int)> infectedLocations,
+            ImmutableHashSet<(int, int)> weakLocations,
+            ImmutableHashSet<(int, int)> flaggedLocations,
+            (int Row, int Column) location,
+            char direction,
+            bool causedInfection)
+        {
+            var locationInfected = infectedLocations.Contains(location);
+            var locationWeak = weakLocations.Contains(location);
+            var locationFlagged = flaggedLocations.Contains(location);
+            var locationClean = !(locationInfected || locationFlagged || locationWeak);
+            var nextDirection = locationInfected ? (direction == 'u' ? 'r' : direction == 'r' ? 'd' : direction == 'd' ? 'l' : 'u')
+                : locationFlagged ? (direction == 'u' ? 'd' : direction == 'r' ? 'l' : direction == 'd' ? 'u' : 'r')
+                : locationWeak ? direction
+                : (direction == 'u' ? 'l' : direction == 'l' ? 'd' : direction == 'd' ? 'r' : 'u');
+            var nextInfectionLocations = locationInfected ? infectedLocations.Remove(location)
+                : locationWeak ? infectedLocations.Add(location)
+                : infectedLocations;
+            var nextWeakLocations = locationWeak ? weakLocations.Remove(location)
+                : locationClean ? weakLocations.Add(location)
+                : weakLocations;
+            var nextFlaggedLocations = locationFlagged ? flaggedLocations.Remove(location)
+                : locationInfected ? flaggedLocations.Add(location)
+                : flaggedLocations;
+            var nextRow = nextDirection == 'd' ? location.Row + 1
+                : nextDirection == 'u' ? location.Row - 1
+                : location.Row;
+            var nextCol = nextDirection == 'r' ? location.Column + 1
+                : nextDirection == 'l' ? location.Column - 1
+                : location.Column;
+
+            return (nextInfectionLocations, nextWeakLocations, nextFlaggedLocations, (nextRow, nextCol), nextDirection, locationWeak);
         }
 
     }
