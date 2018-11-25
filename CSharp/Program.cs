@@ -180,6 +180,13 @@ namespace AdventOfCode2017.CSharp
                 Console.WriteLine($"Part 1: {Program.Day22Part1(input)}");
                 Console.WriteLine($"Part 2: {Program.Day22Part2(input)}");
             }
+            else if (day == 23)
+            {
+                var input = Inputs.Day23;
+
+                Console.WriteLine($"Part 1: {Program.Day23Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day23Part2(input)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -1116,21 +1123,26 @@ namespace AdventOfCode2017.CSharp
 
         private static long Day18Part1(string input)
         {
-            var instructions = input
-                .SelectLines()
-                .Select(line => line.Split(" "))
-                .Select(
-                    parts => Tuple.Create(
-                        parts[0],
-                        parts[1],
-                        parts.Length > 2 ? parts[2] : string.Empty))
-                .ToImmutableArray();
+            var instructions = Program.Day18ReadInstructions(input);
 
             return Program.Day18GetRecoveredNote(instructions, -1, 0, ImmutableDictionary<char, long>.Empty);
         }
 
+        private static ImmutableArray<(string Instruction, string X, string Y)> Day18ReadInstructions(string input)
+        {
+            return input
+                .SelectLines()
+                .Select(line => line.Split(" "))
+                .Select(
+                    parts => (
+                        Instruction: parts[0],
+                        X: parts[1],
+                        Y: parts.Length > 2 ? parts[2] : string.Empty))
+                .ToImmutableArray();
+        }
+
         private static long Day18GetRecoveredNote(
-            ImmutableArray<Tuple<string, string, string>> instructions,
+            ImmutableArray<(string Instruction, string X, string Y)> instructions,
             long lastNote,
             int instructionPointer,
             ImmutableDictionary<char, long> registers)
@@ -1184,31 +1196,21 @@ namespace AdventOfCode2017.CSharp
             }
         }
 
-        private static long Day18ValueOfX(ImmutableDictionary<char, long> registers, Tuple<string, string, string> instruction)
+        private static long Day18ValueOfX(ImmutableDictionary<char, long> registers, (string Instruction, string X, string Y) instruction)
         {
-            long parsedX;
-            var valueOfX = long.TryParse(instruction.Item2, out parsedX) ? parsedX : registers.GetValueOrDefault(instruction.Item2[0], 0);
+            var valueOfX = long.TryParse(instruction.X, out var parsedX) ? parsedX : registers.GetValueOrDefault(instruction.X[0], 0);
             return valueOfX;
         }
 
-        private static long Day18ValueOfY(ImmutableDictionary<char, long> registers, Tuple<string, string, string> instruction)
+        private static long Day18ValueOfY(ImmutableDictionary<char, long> registers, (string Instruction, string X, string Y) instruction)
         {
-            long parsedY;
-            var valueOfY = long.TryParse(instruction.Item3, out parsedY) ? parsedY : registers.GetValueOrDefault(instruction.Item3[0], 0);
+            var valueOfY = long.TryParse(instruction.Y, out var parsedY) ? parsedY : registers.GetValueOrDefault(instruction.Y[0], 0);
             return valueOfY;
         }
 
         private static long Day18Part2(string input)
         {
-            var instructions = input
-                .SelectLines()
-                .Select(line => line.Split(" "))
-                .Select(
-                    parts => Tuple.Create(
-                        parts[0],
-                        parts[1],
-                        parts.Length > 2 ? parts[2] : string.Empty))
-                .ToImmutableArray();
+            var instructions = Program.Day18ReadInstructions(input);
 
             return EnumerableExtensions.TupleGenerate(
                 Tuple.Create(ImmutableList<long>.Empty, 0, ImmutableDictionary<char, long>.Empty.Add('p', 0)),
@@ -1222,7 +1224,7 @@ namespace AdventOfCode2017.CSharp
         }
 
         private static Tuple<ImmutableList<long>, int, ImmutableDictionary<char, long>> Day18RunOnce(
-            ImmutableArray<Tuple<string, string, string>> instructions,
+            ImmutableArray<(string Instruction, string X, string Y)> instructions,
             ImmutableList<long> receiveQueue,
             ImmutableList<long> sendQueue,
             int instructionPointer,
@@ -1776,6 +1778,104 @@ namespace AdventOfCode2017.CSharp
                 : location.Column;
 
             return (nextInfectionLocations, nextWeakLocations, nextFlaggedLocations, (nextRow, nextCol), nextDirection, locationWeak);
+        }
+
+        private static long Day23Part1(string input)
+        {
+            var instructions = Program.Day18ReadInstructions(input);
+
+            return EnumerableExtensions
+                .TupleGenerate(
+                    0,
+                    ImmutableDictionary<char, long>.Empty,
+                    (instructionPointer, __) => instructionPointer < instructions.Length,
+                    (instructionPointer, registers) => Program.Day23ExecuteInstruction(
+                        instructions,
+                        instructionPointer,
+                        registers))
+                .Count(t => instructions[t.Item1].Instruction == "mul");
+        }
+
+        private static Tuple<int, ImmutableDictionary<char, long>> Day23ExecuteInstruction(
+            ImmutableArray<(string Instruction, string X, string Y)> instructions,
+            int instructionPointer,
+            ImmutableDictionary<char, long> registers)
+        {
+            var instruction = instructions[instructionPointer];
+            var nextInstructionPointer = instructionPointer + 1;
+            var nextRegisters = registers;
+
+            switch (instruction.Instruction)
+            {
+                case "set":
+                {
+                    var valueOfY = Program.Day18ValueOfY(registers, instruction);
+                    nextRegisters = registers.UpdateValue(instruction.Item2[0], 0, _ => valueOfY);
+                    break;
+                }
+                case "sub":
+                {
+                    var valueOfY = Program.Day18ValueOfY(registers, instruction);
+                    nextRegisters = registers.UpdateValue(instruction.Item2[0], 0, x => x - valueOfY);
+                    break;
+                }
+                case "mul":
+                {
+                    var valueOfY = Program.Day18ValueOfY(registers, instruction);
+                    nextRegisters = registers.UpdateValue(instruction.Item2[0], 0, x => x * valueOfY);
+                    break;
+                }
+                case "jnz":
+                {
+                    var valueOfX = Program.Day18ValueOfX(registers, instruction);
+                    var valueOfY = Program.Day18ValueOfY(registers, instruction);
+                    if (valueOfX != 0)
+                    {
+                        nextInstructionPointer = (int) (instructionPointer + valueOfY);
+                    }
+                    break;
+                }
+                default:
+                    throw new InvalidOperationException($"Got invalid instruction: {instruction}");
+            }
+
+            return Tuple.Create(nextInstructionPointer, nextRegisters);
+        }
+
+        private static long Day23Part2(string input)
+        {
+            // Program is too slow as-is, so it has to be decompiled. The
+            // program determines the number of non-primes from 106700 to
+            // 123700.
+
+            // var instructions = Program.Day18ReadInstructions(input);
+
+            // var finalRegisters = EnumerableExtensions
+            //     .TupleGenerate(
+            //         0,
+            //         ImmutableDictionary<char, long>.Empty.Add('a', 1),
+            //         (instructionPointer, __) => instructionPointer < instructions.Length,
+            //         (instructionPointer, registers) => Program.Day23ExecuteInstruction(
+            //             instructions,
+            //             instructionPointer,
+            //             registers))
+            //     .Last();
+
+            // return finalRegisters.Item2.GetValueOrDefault('h', 0);
+
+            return EnumerableExtensions
+                .Generate(106700, num => num <= 123700, num => num + 17)
+                .Count(number => !Program.Day23IsPrime(number));
+        }
+
+        private static bool Day23IsPrime(int number)
+        {
+            var end = (int) Math.Sqrt(number);
+
+            return EnumerableExtensions
+                .Generate(3, divisor => divisor <= end, divisor => divisor + 2)
+                .StartWith(2)
+                .All(divisor => number % divisor != 0);
         }
 
     }
