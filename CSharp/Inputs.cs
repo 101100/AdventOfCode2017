@@ -6,46 +6,46 @@ namespace AdventOfCode2017.CSharp
     public static class Inputs
     {
 
-        public static string Day1 => GetDataFileText("day1.txt");
+        public static string Day1 => Inputs.GetDataFileText("day1.txt");
 
-        public static string Day2 => GetDataFileText("day2.txt");
+        public static string Day2 => Inputs.GetDataFileText("day2.txt");
 
         public const int Day3 = 312051;
 
-        public static string Day4 => GetDataFileText("day4.txt");
+        public static string Day4 => Inputs.GetDataFileText("day4.txt");
 
-        public static string Day5 => GetDataFileText("day5.txt");
+        public static string Day5 => Inputs.GetDataFileText("day5.txt");
 
-        public static string Day6 => GetDataFileText("day6.txt");
+        public static string Day6 => Inputs.GetDataFileText("day6.txt");
 
-        public static string Day7 => GetDataFileText("day7.txt");
+        public static string Day7 => Inputs.GetDataFileText("day7.txt");
 
-        public static string Day8 => GetDataFileText("day8.txt");
+        public static string Day8 => Inputs.GetDataFileText("day8.txt");
 
-        public static string Day9 => GetDataFileText("day9.txt");
+        public static string Day9 => Inputs.GetDataFileText("day9.txt");
 
-        public static string Day10 => GetDataFileText("day10.txt");
+        public static string Day10 => Inputs.GetDataFileText("day10.txt");
 
-        public static string Day11 => GetDataFileText("day11.txt");
+        public static string Day11 => Inputs.GetDataFileText("day11.txt");
 
-        public static string Day12 => GetDataFileText("day12.txt");
+        public static string Day12 => Inputs.GetDataFileText("day12.txt");
 
-        public static string Day13 => GetDataFileText("day13.txt");
+        public static string Day13 => Inputs.GetDataFileText("day13.txt");
 
         public const string Day14 = "ugkiagan";
 
         public const int Day15A = 722;
         public const int Day15B = 354;
 
-        public static string Day16 => GetDataFileText("day16.txt");
+        public static string Day16 => Inputs.GetDataFileText("day16.txt");
 
         public const int Day17 = 344;
 
-        public static string Day18 => GetDataFileText("day18.txt");
+        public static string Day18 => Inputs.GetDataFileText("day18.txt");
 
-        public static string Day19 => GetDataFileText("day19.txt");
+        public static string Day19 => Inputs.GetDataFileText("day19.txt");
 
-        public static string Day20 => GetDataFileText("day20.txt");
+        public static string Day20 => Inputs.GetDataFileText("day20.txt");
 
         private static string GetDataFileText(string filename)
         {
