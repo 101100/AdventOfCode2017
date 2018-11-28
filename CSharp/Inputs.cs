@@ -55,6 +55,8 @@ namespace AdventOfCode2017.CSharp
 
         public static string Day24 => Inputs.GetDataFileText("day24.txt");
 
+        public static string Day25 => Inputs.GetDataFileText("day25.txt");
+
         private static string GetDataFileText(string filename)
         {
             return File.ReadAllText(Path.Combine(
