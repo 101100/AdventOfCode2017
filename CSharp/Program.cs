@@ -187,6 +187,13 @@ namespace AdventOfCode2017.CSharp
                 Console.WriteLine($"Part 1: {Program.Day23Part1(input)}");
                 Console.WriteLine($"Part 2: {Program.Day23Part2(input)}");
             }
+            else if (day == 24)
+            {
+                var input = Inputs.Day24;
+
+                Console.WriteLine($"Part 1: {Program.Day24Part1(input)}");
+                Console.WriteLine($"Part 2: {Program.Day24Part2(input)}");
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -1876,6 +1883,113 @@ namespace AdventOfCode2017.CSharp
                 .Generate(3, divisor => divisor <= end, divisor => divisor + 2)
                 .StartWith(2)
                 .All(divisor => number % divisor != 0);
+        }
+
+        private static int Day24Part1(string input)
+        {
+            var components = Program.Day24ReadComponents(input);
+
+            var strongestBridge = Program.Day24GetStrongestBridge(0, components, ImmutableHashSet<int>.Empty);
+
+            return strongestBridge.Strength;
+        }
+
+        private static ImmutableDictionary<int, ImmutableArray<(int Left, int Right, string Part, int Id)>> Day24ReadComponents(string input)
+        {
+            var components = input
+                .SelectLines()
+                .Select((line, index) =>
+                {
+                    var parts = line.Split("/");
+                    return (
+                        Left: int.Parse(parts[0]),
+                        Right: int.Parse(parts[1]),
+                        Part: line,
+                        Id: index);
+                })
+                .SelectMany(t => t.Left == t.Right
+                    ? new[] {t}
+                    : new[] {t, (Left: t.Right, Right: t.Left, t.Part, t.Id)})
+                .GroupBy(t => t.Left)
+                .ToImmutableDictionary(g => g.Key, g => g.ToImmutableArray());
+            return components;
+        }
+
+        private static (int Strength, ImmutableList<string> Components) Day24GetStrongestBridge(
+            int lastPort,
+            ImmutableDictionary<int, ImmutableArray<(int Left, int Right, string Part, int Id)>> components,
+            ImmutableHashSet<int> usedComponents)
+        {
+            var candidates = components.GetValueOrDefault(lastPort, ImmutableArray<(int Left, int Right, string Part, int Id)>.Empty)
+                .Where(t => !usedComponents.Contains(t.Id))
+                .ToImmutableArray();
+
+            if (candidates.IsEmpty)
+            {
+                return (0, ImmutableList<string>.Empty);
+            }
+
+            var selected = default(string);
+            var selectedResult = (Strength: 0, Components: ImmutableList<string>.Empty);
+            foreach (var component in candidates)
+            {
+                var result = Program.Day24GetStrongestBridge(component.Right, components, usedComponents.Add(component.Id));
+
+                var totalStrength = result.Strength + component.Left + component.Right;
+                if (selected == null || totalStrength > selectedResult.Strength)
+                {
+                    selected = component.Part;
+                    selectedResult = (
+                        totalStrength,
+                        result.Components.Insert(0, component.Part)
+                    );
+                }
+            }
+
+            return selectedResult;
+        }
+
+        private static int Day24Part2(string input)
+        {
+            var components = Program.Day24ReadComponents(input);
+
+            var longestBridge = Program.Day24GetLongestBridge(0, components, ImmutableHashSet<int>.Empty);
+
+            return longestBridge.Strength;
+        }
+
+        private static (int Strength, ImmutableList<string> Components) Day24GetLongestBridge(
+            int lastPort,
+            ImmutableDictionary<int, ImmutableArray<(int Left, int Right, string Part, int Id)>> components,
+            ImmutableHashSet<int> usedComponents)
+        {
+            var candidates = components.GetValueOrDefault(lastPort, ImmutableArray<(int Left, int Right, string Part, int Id)>.Empty)
+                .Where(t => !usedComponents.Contains(t.Id))
+                .ToImmutableArray();
+
+            if (candidates.IsEmpty)
+            {
+                return (0, ImmutableList<string>.Empty);
+            }
+
+            var selected = default(string);
+            var selectedResult = (Strength: 0, Components: ImmutableList<string>.Empty);
+            foreach (var component in candidates)
+            {
+                var result = Program.Day24GetLongestBridge(component.Right, components, usedComponents.Add(component.Id));
+
+                var totalLength = result.Components.Count + 1;
+                if (selected == null || totalLength > selectedResult.Components.Count)
+                {
+                    selected = component.Part;
+                    selectedResult = (
+                        result.Strength + component.Left + component.Right,
+                        result.Components.Insert(0, component.Part)
+                    );
+                }
+            }
+
+            return selectedResult;
         }
 
     }
