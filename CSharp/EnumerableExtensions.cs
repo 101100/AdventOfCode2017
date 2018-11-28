@@ -20,19 +20,24 @@ namespace AdventOfCode2017.CSharp
             }
         }
 
-        public static IEnumerable<IEnumerable<T>> Batch<T>(this IEnumerable<T> input, int batchSize)
+        public static IEnumerable<ImmutableArray<T>> Batch<T>(this IEnumerable<T> input, int batchSize)
         {
-            var inputArray = input.ToImmutableArray();
+            var curr = new List<T>(batchSize);
 
-            for (var start = 0; start < inputArray.Length; start += batchSize)
+            foreach (var item in input)
             {
-                yield return inputArray.Skip(start).Take(batchSize);
+                curr.Add(item);
+
+                if (curr.Count == batchSize)
+                {
+                    yield return curr.ToImmutableArray();
+                    curr.Clear();
+                }
             }
 
-            var remainder = inputArray.Length % batchSize;
-            if (remainder > 0)
+            if (curr.Count > 0)
             {
-                yield return inputArray.Skip(inputArray.Length - remainder);
+                yield return curr.ToImmutableArray();
             }
         }
 

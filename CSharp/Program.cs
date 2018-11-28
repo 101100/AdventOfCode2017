@@ -194,6 +194,13 @@ namespace AdventOfCode2017.CSharp
                 Console.WriteLine($"Part 1: {Program.Day24Part1(input)}");
                 Console.WriteLine($"Part 2: {Program.Day24Part2(input)}");
             }
+            else if (day == 25)
+            {
+                var input = Inputs.Day25;
+
+                Console.WriteLine($"Part 1: {Program.Day25Part1(input)}");
+                // There is no part 2!
+            }
             else
             {
                 Console.WriteLine($"I've never heard of day '{day}', sorry.");
@@ -1990,6 +1997,79 @@ namespace AdventOfCode2017.CSharp
             }
 
             return selectedResult;
+        }
+
+        private static int Day25Part1(string input)
+        {
+            var (startState, stepCount, states) = Program.Day25ReadMachine(input);
+
+            var finalState = EnumerableExtensions
+                .TupleGenerate(
+                    startState,
+                    ImmutableHashSet<int>.Empty,
+                    0,
+                    (_, __, ___) => true,
+                    (lastState, tape, location) =>
+                    {
+                        var value = tape.Contains(location) ? 1 : 0;
+                        var action = states[lastState][value];
+                        return Tuple.Create(
+                            action.NextState,
+                            action.Write == 1 ? tape.Add(location) : tape.Remove(location),
+                            action.Move == 'r' ? location + 1 : location - 1);
+                    })
+                .Skip(stepCount)
+                .First();
+
+            return finalState.Item2.Count;
+        }
+
+        private static (char StartState, int StepCount, ImmutableDictionary<char, (int Write, char Move, char NextState)[]> States) Day25ReadMachine(string input)
+        {
+            var lines = input
+                .SelectLines()
+                .ToImmutableArray();
+
+            var startState = lines[0][15];
+            var stepCount = int.Parse(lines[1].Split(" ")[5]);
+
+            var states = lines
+                .Skip(2)
+                .Batch(9)
+                .Select(linesForState =>
+                {
+                    var state = linesForState[0][9];
+
+                    var ifZeroWrite = linesForState[2][22] == '1' ? 1 : 0;
+                    var ifZeroMove = linesForState[3][27];
+                    var ifZeroNextState = linesForState[4][26];
+
+                    var ifOneWrite = linesForState[6][22] == '1' ? 1 : 0;
+                    var ifOneMove = linesForState[7][27];
+                    var ifOneNextState = linesForState[8][26];
+
+                    return (
+                        State: state,
+                        Actions: new[] {
+                            (
+                                Write: ifZeroWrite,
+                                Move: ifZeroMove,
+                                NextState: ifZeroNextState
+                            ),
+                            (
+                                Write: ifOneWrite,
+                                Move: ifOneMove,
+                                NextState: ifOneNextState
+                            )
+                        }
+                    );
+                })
+                .ToImmutableDictionary(t => t.State, t => t.Actions);
+
+            return (
+                StartState: startState,
+                StepCount: stepCount,
+                States: states);
         }
 
     }
