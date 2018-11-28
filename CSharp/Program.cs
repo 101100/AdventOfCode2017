@@ -185,7 +185,7 @@ namespace AdventOfCode2017.CSharp
                 var input = Inputs.Day23;
 
                 Console.WriteLine($"Part 1: {Program.Day23Part1(input)}");
-                Console.WriteLine($"Part 2: {Program.Day23Part2(input)}");
+                Console.WriteLine($"Part 2: {Program.Day23Part2()}");
             }
             else if (day == 24)
             {
@@ -544,7 +544,6 @@ namespace AdventOfCode2017.CSharp
 
         private class TreeNode
         {
-            public string Name;
             public int Weight;
             public ImmutableArray<TreeNode> Children;
             public int ChildrenWeight;
@@ -558,7 +557,6 @@ namespace AdventOfCode2017.CSharp
 
             var root = new TreeNode
             {
-                Name = rootName,
                 Weight = rootInfo.Item2,
                 Children = rootInfo.Item3
                     .Select(childName => childName.Day7BuildTree(inputs))
@@ -1093,7 +1091,7 @@ namespace AdventOfCode2017.CSharp
                 .TakeWhile(s => !string.Equals(s.Item1, "abcdefghijklmnop"))
                 .Count() + 1;
 
-            var extraDances = 1000000000L % 36;
+            var extraDances = 1000000000L % period;
 
             return Program.Day16OneDance(inputs.Repeat((int) extraDances), "abcdefghijklmnop");
         }
@@ -1110,7 +1108,7 @@ namespace AdventOfCode2017.CSharp
         {
             return EnumerableExtensions.TupleGenerate(
                     0,
-                    ImmutableList.Create<int>(0),
+                    ImmutableList.Create(0),
                     (_, buffer) => buffer.Count <= lastValue + 1,
                     (currentPosition, buffer) => Tuple.Create(
                         (currentPosition + steps) % buffer.Count + 1,
@@ -1316,7 +1314,7 @@ namespace AdventOfCode2017.CSharp
                     0,
                     startingCol,
                     'd',
-                    (_row, _col, direction) => direction != 's',
+                    (row, col, direction) => direction != 's',
                     (row, col, direction) => Program.Day19GetNextStep(row, col, direction, map))
                 .Select(t => map[t.Item1][t.Item2])
                 .Where(ch => !knownChars.Contains(ch))
@@ -1356,20 +1354,12 @@ namespace AdventOfCode2017.CSharp
                 .TakeWhile(ch => ch == ' ')
                 .Count();
 
-            var knownChars = new[]
-            {
-                '-',
-                '|',
-                '+',
-                'x'
-            }.ToImmutableHashSet();
-
             return EnumerableExtensions
                 .TupleGenerate(
                     0,
                     startingCol,
                     'd',
-                    (_row, _col, direction) => direction != 's',
+                    (row, col, direction) => direction != 's',
                     (row, col, direction) => Program.Day19GetNextStep(row, col, direction, map))
                 .Count();
         }
@@ -1390,10 +1380,10 @@ namespace AdventOfCode2017.CSharp
         private static int Day20GetSlowest(IEnumerable<ImmutableArray<int>> vectors)
         {
             var manhattanAccelerations = vectors
-                .Select<ImmutableArray<int>, int>(v => v.TakeLast(3).Select(Math.Abs).Sum());
+                .Select(v => v.TakeLast(3).Select(Math.Abs).Sum());
 
             return manhattanAccelerations
-                .Select((accel, index) => Tuple.Create(index, accel))
+                .Select((acceleration, index) => Tuple.Create(index, acceleration))
                 .OrderBy(t => t.Item2)
                 .First()
                 .Item1;
@@ -1856,7 +1846,7 @@ namespace AdventOfCode2017.CSharp
             return Tuple.Create(nextInstructionPointer, nextRegisters);
         }
 
-        private static long Day23Part2(string input)
+        private static long Day23Part2()
         {
             // Program is too slow as-is, so it has to be decompiled. The
             // program determines the number of non-primes from 106700 to
