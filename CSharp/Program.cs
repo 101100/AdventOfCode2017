@@ -659,30 +659,30 @@ namespace AdventOfCode2017.CSharp
         private static int Day9Part1(string input)
         {
             return Program.Day9CreateGroupsStream(input)
-                .Where(t => t.Item2)
-                .Sum(t => t.Item5);
+                .Where(t => t.GroupStart)
+                .Sum(t => t.Score);
         }
 
         private static int Day9Part2(string input)
         {
             return Program.Day9CreateGroupsStream(input)
-                .Count(t => t.Item1 == 0 && t.Item4 && !t.Item3);
+                .Count(t => t.Cancelled == 0 && t.InGarbage && !t.GarbageStart);
         }
 
-        private static IEnumerable<Tuple<int, bool, bool, bool, int>> Day9CreateGroupsStream(string input)
+        private static IEnumerable<(int Cancelled, bool GroupStart, bool GarbageStart, bool InGarbage, int Score)> Day9CreateGroupsStream(string input)
         {
             return input
                 .TupleScan(0, false, false, false, 0,
                     (cancelled, groupStart, garbageStart, inGarbage, depth, ch) =>
-                        cancelled == 2 ? Tuple.Create(1, false, false, inGarbage, depth)
-                            : ch == '!' ? Tuple.Create(2, false, false, inGarbage, depth)
+                        cancelled == 2 ? (1, false, false, inGarbage, depth)
+                            : ch == '!' ? (2, false, false, inGarbage, depth)
                             : inGarbage
-                                ? (ch == '>' ? Tuple.Create(0, false, false, false, depth)
-                                : Tuple.Create(0, false, false, true, depth))
-                            : ch == '<' ? Tuple.Create(0, false, true, true, depth)
-                            : ch == '{' ? Tuple.Create(0, true, false, false, depth + 1)
-                            : ch == '}' ? Tuple.Create(0, false, false, false, depth - 1)
-                            : Tuple.Create(0, false, false, false, depth));
+                                ? (ch == '>' ? (0, false, false, false, depth)
+                                : (0, false, false, true, depth))
+                            : ch == '<' ? (0, false, true, true, depth)
+                            : ch == '{' ? (0, true, false, false, depth + 1)
+                            : ch == '}' ? (0, false, false, false, depth - 1)
+                            : (0, false, false, false, depth));
         }
 
         private static int Day10Part1(string input)
@@ -694,9 +694,9 @@ namespace AdventOfCode2017.CSharp
             var finalState = input
                 .Split(",")
                 .Select(int.Parse)
-                .Select((length, skipCount) => Tuple.Create(length, skipCount))
+                .Select((length, skipCount) => (length, skipCount))
                 .TupleAggregate(startingState, 0,
-                    (state, currentPosition, length, skipSize) => Tuple.Create(
+                    (state, currentPosition, length, skipSize) => (
                         Program.Day10Twist(state, currentPosition, length),
                         (currentPosition + length + skipSize) % state.Length));
 
@@ -747,9 +747,9 @@ namespace AdventOfCode2017.CSharp
 
             var finalState = Program.Day10ToLengths(input)
                 .Repeat(64)
-                .Select((length, skipCount) => Tuple.Create(length, skipCount))
+                .Select((length, skipCount) => (length, skipCount))
                 .TupleAggregate(startingState, 0,
-                    (state, currentPosition, length, skipSize) => Tuple.Create(
+                    (state, currentPosition, length, skipSize) => (
                         Program.Day10Twist(state, currentPosition, length),
                         (currentPosition + length + skipSize) % state.Length));
 
@@ -765,30 +765,30 @@ namespace AdventOfCode2017.CSharp
                 .Select(s => s.Trim())
                 .Select(Program.Day11DirectionToLocationChange)
                 .TupleAggregate(0d, 0d,
-                    (cx, cy, dx, dy) => Tuple.Create(cx + dx, cy + dy));
+                    (cx, cy, dx, dy) => (cx + dx, cy + dy));
 
             return Program.Day11HexDistance(finalPosition.Item1, finalPosition.Item2);
         }
 
-        private static Tuple<double, double> Day11DirectionToLocationChange(string s)
+        private static (double, double) Day11DirectionToLocationChange(string s)
         {
             switch (s)
             {
                 case "s":
-                    return Tuple.Create<double, double>(0, -1);
+                    return (0, -1);
                 case "se":
-                    return Tuple.Create<double, double>(1, -0.5);
+                    return (1, -0.5);
                 case "sw":
-                    return Tuple.Create<double, double>(-1, -0.5);
+                    return (-1, -0.5);
                 case "n":
-                    return Tuple.Create<double, double>(0, 1);
+                    return (0, 1);
                 case "ne":
-                    return Tuple.Create<double, double>(1, 0.5);
+                    return (1, 0.5);
                 case "nw":
-                    return Tuple.Create<double, double>(-1, 0.5);
+                    return (-1, 0.5);
                 default:
                     Console.WriteLine($"Bad direction: {s}");
-                    return Tuple.Create<double, double>(0, 0);
+                    return (0, 0);
             }
         }
 
@@ -804,7 +804,7 @@ namespace AdventOfCode2017.CSharp
                 .Select(s => s.Trim())
                 .Select(Program.Day11DirectionToLocationChange)
                 .TupleScan(0d, 0d,
-                    (cx, cy, dx, dy) => Tuple.Create(cx + dx, cy + dy))
+                    (cx, cy, dx, dy) => (cx + dx, cy + dy))
                 .TupleSelect(Program.Day11HexDistance)
                 .Max();
         }
@@ -835,7 +835,7 @@ namespace AdventOfCode2017.CSharp
                 new [] {startNode}.ToImmutableHashSet(),
                 ImmutableList.Create(startNode),
                 (_, queue) => queue.Count > 0,
-                (connected, queue) => Tuple.Create(
+                (connected, queue) => (
                     connected.Union(inputs[queue[0]]),
                     queue.RemoveAt(0).AddRange(inputs[queue[0]].Except(connected))))
                 .Last()
@@ -1104,13 +1104,13 @@ namespace AdventOfCode2017.CSharp
             return finalState.Item2[finalState.Item1 + 1];
         }
 
-        private static IEnumerable<Tuple<int, ImmutableList<int>>> Day17Spinlock1(int steps, int lastValue)
+        private static IEnumerable<(int, ImmutableList<int>)> Day17Spinlock1(int steps, int lastValue)
         {
             return EnumerableExtensions.TupleGenerate(
                     0,
                     ImmutableList.Create(0),
                     (_, buffer) => buffer.Count <= lastValue + 1,
-                    (currentPosition, buffer) => Tuple.Create(
+                    (currentPosition, buffer) => (
                         (currentPosition + steps) % buffer.Count + 1,
                         buffer.Insert((currentPosition + steps) % buffer.Count + 1, buffer.Count)));
         }
@@ -1122,13 +1122,13 @@ namespace AdventOfCode2017.CSharp
                 .Item2;
         }
 
-        private static IEnumerable<Tuple<int, int>> Day17Spinlock1BeforeZero(int steps, int repetitions)
+        private static IEnumerable<(int, int)> Day17Spinlock1BeforeZero(int steps, int repetitions)
         {
             return Enumerable.Range(1, repetitions)
                 .TupleScan(
                     0,
                     -1,
-                    (currentPosition, valueAfterZero, next) => Tuple.Create(
+                    (currentPosition, valueAfterZero, next) => (
                         (currentPosition + steps) % next + 1,
                         (currentPosition + steps) % next == 0 ? next : valueAfterZero));
         }
@@ -1230,8 +1230,8 @@ namespace AdventOfCode2017.CSharp
                 0,
                 (program0, program1, turn) => program0.Item1.Count + program1.Item1.Count > 0 || program0.Item2 == 0,
                 (program0, program1, turn) => turn == 0
-                    ? Tuple.Create(Program.Day18RunOnce(instructions, program1.Item1, ImmutableList<long>.Empty, program0.Item2, program0.Item3), program1, 1)
-                    : Tuple.Create(program0, Program.Day18RunOnce(instructions, program0.Item1, ImmutableList<long>.Empty, program1.Item2, program1.Item3), 0))
+                    ? (Program.Day18RunOnce(instructions, program1.Item1, ImmutableList<long>.Empty, program0.Item2, program0.Item3), program1, 1)
+                    : (program0, Program.Day18RunOnce(instructions, program0.Item1, ImmutableList<long>.Empty, program1.Item2, program1.Item3), 0))
                 .Sum(state => state.Item2.Item1.Count) / 2;
         }
 
@@ -1321,7 +1321,7 @@ namespace AdventOfCode2017.CSharp
                 .ToArray());
         }
 
-        private static Tuple<int, int, char> Day19GetNextStep(int row, int col, char direction, ImmutableArray<ImmutableArray<char>> map)
+        private static (int Row, int Column, char Direction) Day19GetNextStep(int row, int col, char direction, ImmutableArray<ImmutableArray<char>> map)
         {
             var atPlus = map[row][col] == '+';
             var upBlank = row == 0 || map[row - 1][col] == ' ';
@@ -1340,7 +1340,7 @@ namespace AdventOfCode2017.CSharp
                 : nextDirection == 'l' ? col - 1
                 : col;
 
-            return Tuple.Create(nextRow, nextCol, map[nextRow][nextCol] == ' ' ? 's' : nextDirection);
+            return (nextRow, nextCol, map[nextRow][nextCol] == ' ' ? 's' : nextDirection);
         }
 
         private static int Day19Part2(string input)
@@ -1800,7 +1800,7 @@ namespace AdventOfCode2017.CSharp
                 .Count(t => instructions[t.Item1].Instruction == "mul");
         }
 
-        private static Tuple<int, ImmutableDictionary<char, long>> Day23ExecuteInstruction(
+        private static (int, ImmutableDictionary<char, long>) Day23ExecuteInstruction(
             ImmutableArray<(string Instruction, string X, string Y)> instructions,
             int instructionPointer,
             ImmutableDictionary<char, long> registers)
@@ -1843,7 +1843,7 @@ namespace AdventOfCode2017.CSharp
                     throw new InvalidOperationException($"Got invalid instruction: {instruction}");
             }
 
-            return Tuple.Create(nextInstructionPointer, nextRegisters);
+            return (nextInstructionPointer, nextRegisters);
         }
 
         private static long Day23Part2()
@@ -2003,7 +2003,7 @@ namespace AdventOfCode2017.CSharp
                     {
                         var value = tape.Contains(location) ? 1 : 0;
                         var action = states[lastState][value];
-                        return Tuple.Create(
+                        return (
                             action.NextState,
                             action.Write == 1 ? tape.Add(location) : tape.Remove(location),
                             action.Move == 'r' ? location + 1 : location - 1);

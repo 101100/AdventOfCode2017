@@ -8,7 +8,7 @@ namespace AdventOfCode2017.CSharp
 {
     public static class EnumerableExtensions
     {
-        public static IEnumerable<Tuple<T, T>> AllPairs<T>(this IEnumerable<T> input)
+        public static IEnumerable<(T, T)> AllPairs<T>(this IEnumerable<T> input)
         {
             var inputArray = input.ToArray();
 
@@ -16,7 +16,7 @@ namespace AdventOfCode2017.CSharp
             {
                 for (var j = i + 1; j < inputArray.Length; j++)
                 {
-                    yield return Tuple.Create(inputArray[i], inputArray[j]);
+                    yield return (inputArray[i], inputArray[j]);
                 }
             }
         }
@@ -61,7 +61,7 @@ namespace AdventOfCode2017.CSharp
             }
         }
 
-        public static IEnumerable<Tuple<T, T>> PairWise<T>(this IEnumerable<T> input)
+        public static IEnumerable<(T, T)> PairWise<T>(this IEnumerable<T> input)
         {
             var last = default(T);
             var first = true;
@@ -69,7 +69,7 @@ namespace AdventOfCode2017.CSharp
             {
                 if (!first)
                 {
-                    yield return Tuple.Create(last, next);
+                    yield return (last, next);
                 }
                 last = next;
                 first = false;
@@ -105,30 +105,30 @@ namespace AdventOfCode2017.CSharp
                 .Where(s => s.Length > 0);
         }
 
-        public static Tuple<TState1, TState2> TupleAggregate<TInput1, TInput2, TState1, TState2>(
-            this IEnumerable<Tuple<TInput1, TInput2>> input,
+        public static (TState1, TState2) TupleAggregate<TInput1, TInput2, TState1, TState2>(
+            this IEnumerable<(TInput1, TInput2)> input,
             TState1 seed1,
             TState2 seed2,
-            Func<TState1, TState2, TInput1, TInput2, Tuple<TState1, TState2>> update)
+            Func<TState1, TState2, TInput1, TInput2, (TState1, TState2)> update)
         {
             return input
-                .Aggregate(Tuple.Create(seed1, seed2), (state, next) => update(state.Item1, state.Item2, next.Item1, next.Item2));
+                .Aggregate((seed1, seed2), (state, next) => update(state.Item1, state.Item2, next.Item1, next.Item2));
         }
 
-        public static Tuple<TState1, TState2, TState3> TupleAggregate<TInput1, TInput2, TInput3, TState1, TState2, TState3>(
-            this IEnumerable<Tuple<TInput1, TInput2, TInput3>> input,
+        public static (TState1, TState2, TState3) TupleAggregate<TInput1, TInput2, TInput3, TState1, TState2, TState3>(
+            this IEnumerable<(TInput1, TInput2, TInput3)> input,
             TState1 seed1,
             TState2 seed2,
             TState3 seed3,
-            Func<TState1, TState2, TState3, TInput1, TInput2, TInput3, Tuple<TState1, TState2, TState3>> update)
+            Func<TState1, TState2, TState3, TInput1, TInput2, TInput3, (TState1, TState2, TState3)> update)
         {
             return input
-                .Aggregate(Tuple.Create(seed1, seed2, seed3), (state, next) => update(state.Item1, state.Item2, state.Item3, next.Item1, next.Item2, next.Item3));
+                .Aggregate((seed1, seed2, seed3), (state, next) => update(state.Item1, state.Item2, state.Item3, next.Item1, next.Item2, next.Item3));
         }
 
-        public static IEnumerable<Tuple<T1, T2>> TupleGenerate<T1, T2>(T1 seed1, T2 seed2, Func<T1, T2, bool> predicate, Func<T1, T2, Tuple<T1, T2>> iterate)
+        public static IEnumerable<(T1, T2)> TupleGenerate<T1, T2>(T1 seed1, T2 seed2, Func<T1, T2, bool> predicate, Func<T1, T2, (T1, T2)> iterate)
         {
-            var next = Tuple.Create(seed1, seed2);
+            var next = (seed1, seed2);
             while (predicate(next.Item1, next.Item2))
             {
                 yield return next;
@@ -136,9 +136,9 @@ namespace AdventOfCode2017.CSharp
             }
         }
 
-        public static IEnumerable<Tuple<T1, T2, T3>> TupleGenerate<T1, T2, T3>(T1 seed1, T2 seed2, T3 seed3, Func<T1, T2, T3, bool> predicate, Func<T1, T2, T3, Tuple<T1, T2, T3>> iterate)
+        public static IEnumerable<(T1, T2, T3)> TupleGenerate<T1, T2, T3>(T1 seed1, T2 seed2, T3 seed3, Func<T1, T2, T3, bool> predicate, Func<T1, T2, T3, (T1, T2, T3)> iterate)
         {
-            var next = Tuple.Create(seed1, seed2, seed3);
+            var next = (seed1, seed2, seed3);
             while (predicate(next.Item1, next.Item2, next.Item3))
             {
                 yield return next;
@@ -168,23 +168,23 @@ namespace AdventOfCode2017.CSharp
             // ReSharper disable once IteratorNeverReturns
         }
 
-        public static IEnumerable<Tuple<TState1, TState2>> TupleScan<TInput1, TInput2, TState1, TState2>(
-            this IEnumerable<Tuple<TInput1, TInput2>> input,
+        public static IEnumerable<(TState1, TState2)> TupleScan<TInput1, TInput2, TState1, TState2>(
+            this IEnumerable<(TInput1, TInput2)> input,
             TState1 seed1,
             TState2 seed2,
-            Func<TState1, TState2, TInput1, TInput2, Tuple<TState1, TState2>> update)
+            Func<TState1, TState2, TInput1, TInput2, (TState1, TState2)> update)
         {
             return input
-                .Scan(Tuple.Create(seed1, seed2), (state, next) => update(state.Item1, state.Item2, next.Item1, next.Item2));
+                .Scan((seed1, seed2), (state, next) => update(state.Item1, state.Item2, next.Item1, next.Item2));
         }
 
-        public static IEnumerable<Tuple<T1, T2>> TupleScan<TInput, T1, T2>(
+        public static IEnumerable<(T1, T2)> TupleScan<TInput, T1, T2>(
             this IEnumerable<TInput> input,
             T1 seed1,
             T2 seed2,
-            Func<T1, T2, TInput, Tuple<T1, T2>> update)
+            Func<T1, T2, TInput, (T1, T2)> update)
         {
-            var state = Tuple.Create(seed1, seed2);
+            var state = (seed1, seed2);
 
             foreach (var item in input)
             {
@@ -193,16 +193,16 @@ namespace AdventOfCode2017.CSharp
             }
         }
 
-        public static IEnumerable<Tuple<T1, T2, T3, T4, T5>> TupleScan<TInput, T1, T2, T3, T4, T5>(
+        public static IEnumerable<(T1, T2, T3, T4, T5)> TupleScan<TInput, T1, T2, T3, T4, T5>(
             this IEnumerable<TInput> input,
             T1 seed1,
             T2 seed2,
             T3 seed3,
             T4 seed4,
             T5 seed5,
-            Func<T1, T2, T3, T4, T5, TInput, Tuple<T1, T2, T3, T4, T5>> update)
+            Func<T1, T2, T3, T4, T5, TInput, (T1, T2, T3, T4, T5)> update)
         {
-            var state = Tuple.Create(seed1, seed2, seed3, seed4, seed5);
+            var state = (seed1, seed2, seed3, seed4, seed5);
 
             foreach (var item in input)
             {
@@ -212,7 +212,7 @@ namespace AdventOfCode2017.CSharp
         }
 
         public static IEnumerable<TResult> TupleSelect<TInput1, TInput2, TResult>(
-            this IEnumerable<Tuple<TInput1, TInput2>> input,
+            this IEnumerable<(TInput1, TInput2)> input,
             Func<TInput1, TInput2, TResult> selector)
         {
             return input
