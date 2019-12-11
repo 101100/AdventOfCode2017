@@ -23,3 +23,11 @@ To run the project:
 1. Install .NET Core.
 1. Download the code.
 1. Run `dotnet run <day>`.
+
+## Other Years' Solutions
+
+Here are the links to my solutions for all of the years I have participated:
+
+- [2017](https://github.com/101100/AdventOfCode2017)
+- [2018](https://github.com/101100/AdventOfCode2018)
+- [2019](https://gitlab.101100.ca/101100/adventofcode2019)
