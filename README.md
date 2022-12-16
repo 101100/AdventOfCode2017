@@ -33,3 +33,4 @@ Here are the links to my solutions for all of the years I have participated:
 - [2019](https://gitlab.101100.ca/101100/adventofcode2019)
 - [2020](https://gitlab.101100.ca/101100/adventofcode2020)
 - [2021](https://gitlab.101100.ca/101100/adventofcode2021)
+- [2022](https://gitlab.101100.ca/101100/adventofcode2022)
