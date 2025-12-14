@@ -30,3 +30,7 @@ msbuild.wrn
 
 # Rider
 .idea/
+
+# inputs and inputs repo (for CI)
+inputs
+aoc-inputs

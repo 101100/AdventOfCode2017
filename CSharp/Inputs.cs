@@ -6,23 +6,23 @@ namespace AdventOfCode2017.CSharp
     public static class Inputs
     {
 
-        public static string Day1 => Inputs.GetDataFileText("day1.txt");
+        public static string Day1 => Inputs.GetDataFileText("day01.txt");
 
-        public static string Day2 => Inputs.GetDataFileText("day2.txt");
+        public static string Day2 => Inputs.GetDataFileText("day02.txt");
 
         public const int Day3 = 312051;
 
-        public static string Day4 => Inputs.GetDataFileText("day4.txt");
+        public static string Day4 => Inputs.GetDataFileText("day04.txt");
 
-        public static string Day5 => Inputs.GetDataFileText("day5.txt");
+        public static string Day5 => Inputs.GetDataFileText("day05.txt");
 
-        public static string Day6 => Inputs.GetDataFileText("day6.txt");
+        public static string Day6 => Inputs.GetDataFileText("day06.txt");
 
-        public static string Day7 => Inputs.GetDataFileText("day7.txt");
+        public static string Day7 => Inputs.GetDataFileText("day07.txt");
 
-        public static string Day8 => Inputs.GetDataFileText("day8.txt");
+        public static string Day8 => Inputs.GetDataFileText("day08.txt");
 
-        public static string Day9 => Inputs.GetDataFileText("day9.txt");
+        public static string Day9 => Inputs.GetDataFileText("day09.txt");
 
         public static string Day10 => Inputs.GetDataFileText("day10.txt");
 
@@ -32,7 +32,7 @@ namespace AdventOfCode2017.CSharp
 
         public static string Day13 => Inputs.GetDataFileText("day13.txt");
 
-        public const string Day14 = "ugkiagan";
+        public static string Day14 => Inputs.GetDataFileText("day14.txt");
 
         public const int Day15A = 722;
         public const int Day15B = 354;
@@ -65,6 +65,7 @@ namespace AdventOfCode2017.CSharp
                 "..",
                 "..",
                 "..",
+                "inputs",
                 filename));
         }
 
